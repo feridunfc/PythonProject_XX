@@ -1,0 +1,13 @@
+python-dotenv
+pydantic>=2
+aiohttp
+anyio
+rich
+matplotlib
+pandas
+openpyxl
+typer[all]
+fastapi
+uvicorn
+pytest
+loguru

@@ -1,0 +1,6 @@
+# Ek bağımlılıklar (varsa requirements.txt'ye ekleyin)
+python-dotenv>=1.0.0
+httpx>=0.27.0
+tenacity>=8.2.3
+streamlit>=1.36.0
+pytest>=7.0.0

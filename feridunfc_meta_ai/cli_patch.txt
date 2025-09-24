@@ -1,0 +1,15 @@
+# cli.py başına ekleyin:
+from dotenv import load_dotenv
+load_dotenv()
+
+# ayrıca bir komut eklemek için:
+import typer
+from feridunfc_meta_ai.utils.trace_reporter import generate_html_report
+app = typer.Typer()
+
+@app.command()
+def trace_report():
+    """Trace loglarından HTML rapor üretir."""
+    generate_html_report()
+
+# mevcut main/app içine uygun şekilde entegre edin.
