@@ -104,3 +104,7 @@ class BaseAIAgent(ABC):
     async def process_task(self, task: Task, context: Dict[str, Any]) -> Dict[str, Any]:
         """Ajan-özgü iş mantığı."""
         ...
+
+# Backward-compatibility alias
+AIAgent = BaseAIAgent
+
