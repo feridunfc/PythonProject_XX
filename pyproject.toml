@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "feridunfc_meta_ai"
+version = "0.4.0"
+description = "Secure & resilient sprint-based multi-agent orchestrator"
+requires-python = ">=3.10"
+dependencies = [
+  "python-dotenv",
+  "pydantic>=2",
+  "pydantic-settings>=2",
+  "anyio",
+  "httpx>=0.27",
+  "tenacity>=8.2",
+  "rich",
+  "matplotlib",
+  "pandas",
+  "openpyxl",
+  "typer[all]",
+  "fastapi",
+  "uvicorn",
+  "pytest",
+  "httpx",
+  "loguru",
+  "ruff",
+  "black",
+  "pre-commit",
+  "sqlalchemy>=2",
+  "docker>=7.1.0"
+]

@@ -1,0 +1,230 @@
+# feridunfc_meta_ai/utils/ai_client.py
+import os
+import json
+import asyncio
+import logging
+from types import SimpleNamespace
+
+import httpx
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_random_exponential,
+    retry_if_exception,
+)
+
+from ..config.agent_config import AGENT_MODEL_MAP
+
+logger = logging.getLogger(__name__)
+
+# --- Sabitler ---
+RETRYABLE_STATUS = {408, 409, 429, 500, 502, 503, 504}
+FALLBACK_STATUS = {401, 402, 403} | RETRYABLE_STATUS  # 402=ödeme/bakiye, 429=rate limit
+ASCII_USER_AGENT = "feridunfc-meta-ai/0.1"  # sadece ASCII!
+
+# --- Yardımcılar ---
+def _is_retryable_http(e: Exception) -> bool:
+    """Retry'e uygun mu? Status kodu RETRYABLE ise ya da ağ hatasıysa True."""
+    if isinstance(e, httpx.HTTPStatusError):
+        return e.response is not None and e.response.status_code in RETRYABLE_STATUS
+    return isinstance(e, httpx.TransportError)
+
+
+def _retry_after_seconds(headers: httpx.Headers, attempt: int) -> int:
+    """Header'lardan bekleme süresini çıkar; yoksa üstel backoff fallback."""
+    # 1) Standart Retry-After
+    ra = headers.get("Retry-After") or headers.get("retry-after")
+    if ra and ra.isdigit():
+        return min(int(ra), 120)
+
+    # 2) OpenAI rate-limit reset ipuçları
+    for k in ("x-ratelimit-reset-requests", "x-ratelimit-reset-tokens"):
+        v = headers.get(k)
+        if v and v.isdigit():
+            return min(int(v), 120)
+
+    # 3) Fallback: üstel backoff (attempt 0,1,2,...)
+    return min(2 ** max(attempt, 0), 60)
+
+
+class AIClient:
+    def __init__(self, timeout: int = 30):
+        # Client seviyesinde sadece ASCII User-Agent kullanalım
+        self.client = httpx.AsyncClient(timeout=timeout, headers={"User-Agent": ASCII_USER_AGENT})
+
+    async def aclose(self):
+        await self.client.aclose()
+
+    def _providers_for_role(self, agent_role: str):
+        providers = AGENT_MODEL_MAP.get(agent_role, [])
+        # FORCE_PROVIDER varsa başa al
+        force = os.getenv("FORCE_PROVIDER", "").strip().lower()
+        if force:
+            if force == "mock":
+                return [("mock", "mock")]
+            forced = [pm for pm in providers if pm[0] == force]
+            rest = [pm for pm in providers if pm[0] != force]
+            providers = forced + rest
+        return providers or [("mock", "mock")]
+
+    async def call_model(self, agent_role: str, prefer_costly=False, prompt: str = "", system: str = ""):
+        providers = self._providers_for_role(agent_role)
+
+        last_err = None
+        for prov, model in providers:
+            try:
+                if prov == "openai":
+                    return await self.call_openai(model, prompt, system)
+                elif prov == "deepseek":
+                    return await self.call_deepseek(model, prompt, system)
+                elif prov == "mock":
+                    return self._mock_response(agent_role, prompt)
+                else:
+                    logger.warning("Unknown provider %s, skipping", prov)
+            except httpx.HTTPStatusError as e:
+                sc = e.response.status_code if e.response is not None else None
+                logger.error("%s call failed (%s): %s", prov, sc, e)
+                # Bu statuslerde fallback dene
+                if sc in FALLBACK_STATUS:
+                    last_err = e
+                    continue
+                # Diğer hatalar patlasın
+                raise
+            except Exception as e:
+                logger.exception("%s provider error; trying next", prov)
+                last_err = e
+                continue
+
+        # Hiçbiri başarılı olmadıysa: mock izinliyse mock; değilse raise
+        if os.getenv("AI_ALLOW_MOCK", "1") == "1":
+            logger.warning("All providers failed, returning MOCK output")
+            return self._mock_response(agent_role, prompt)
+        raise RuntimeError(f"All providers failed: {last_err}")
+
+    # -------------------- OpenAI --------------------
+    @retry(
+        stop=stop_after_attempt(6),
+        wait=wait_random_exponential(multiplier=1, max=60),
+        retry=retry_if_exception(_is_retryable_http),
+        reraise=True,
+    )
+    async def call_openai(self, model: str, prompt: str, system: str):
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise RuntimeError("OPENAI_API_KEY is not set")
+
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+        messages = [
+            {"role": "system", "content": system or "You output only JSON."},
+            {"role": "user", "content": prompt},
+        ]
+
+        try:
+            r = await self.client.post(
+                "https://api.openai.com/v1/chat/completions",
+                headers=headers,
+                json={"model": model, "messages": messages, "temperature": 0.2, "max_tokens": 800},
+            )
+            r.raise_for_status()
+        except httpx.HTTPStatusError as e:
+            if e.response is not None and e.response.status_code == 429:
+                # Bir sonraki tenacity denemesinden önce header'a göre bekleyelim
+                attempt = getattr(e, "_attempt_number", 0)
+                delay = _retry_after_seconds(e.response.headers, attempt)
+                logger.warning("OpenAI 429; %ss bekleyip yeniden denenecek...", delay)
+                await asyncio.sleep(delay)
+            raise  # tenacity tekrar deneyecek
+
+        js = r.json()
+        return SimpleNamespace(content=js["choices"][0]["message"]["content"], usage=js.get("usage", {}))
+
+    # -------------------- DeepSeek --------------------
+    @retry(
+        stop=stop_after_attempt(6),
+        wait=wait_random_exponential(multiplier=1, max=60),
+        retry=retry_if_exception(_is_retryable_http),
+        reraise=True,
+    )
+    async def call_deepseek(self, model: str, prompt: str, system: str):
+        api_key = os.getenv("DEEPSEEK_API_KEY")
+        if not api_key:
+            raise RuntimeError("DEEPSEEK_API_KEY is not set")
+
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+        messages = [
+            {"role": "system", "content": system or "You output only JSON."},
+            {"role": "user", "content": prompt},
+        ]
+
+        try:
+            r = await self.client.post(
+                "https://api.deepseek.com/v1/chat/completions",
+                headers=headers,
+                json={"model": model, "messages": messages, "temperature": 0.2, "max_tokens": 800},
+            )
+            r.raise_for_status()
+        except httpx.HTTPStatusError as e:
+            if e.response is not None and e.response.status_code == 429:
+                attempt = getattr(e, "_attempt_number", 0)
+                delay = _retry_after_seconds(e.response.headers, attempt)
+                logger.warning("DeepSeek 429; %ss bekleyip yeniden denenecek...", delay)
+                await asyncio.sleep(delay)
+            raise
+
+        js = r.json()
+        return SimpleNamespace(content=js["choices"][0]["message"]["content"], usage=js.get("usage", {}))
+
+    # --- MOCK cevabı: Architect için plan döndür, diğerleri için sade metin ---
+    def _mock_response(self, agent_role: str, prompt: str):
+        if agent_role == "architect":
+            plan = {
+                "sprint_title": "Sprint for: Basit TODO API",
+                "sprint_goal": "Kullanıcı, görev ekle/listele uçlarıyla çalışan basit bir TODO API",
+                "weeks": [
+                    {
+                        "week_number": 1,
+                        "tasks": [
+                            {
+                                "task_id": "architect-initial-plan",
+                                "title": "Mimari ve Modeller",
+                                "description": "FastAPI yapısı ve Pydantic modelleri",
+                                "agent_type": "architect",
+                                "dependencies": [],
+                                "estimated_hours": 4,
+                            },
+                            {
+                                "task_id": "codegen-api",
+                                "title": "API Uçları",
+                                "description": "POST /users, POST /tasks, GET /tasks",
+                                "agent_type": "codegen",
+                                "dependencies": ["architect-initial-plan"],
+                                "estimated_hours": 8,
+                            },
+                            {
+                                "task_id": "tester-api",
+                                "title": "Testler",
+                                "description": "pytest ile unit/integration testleri",
+                                "agent_type": "tester",
+                                "dependencies": ["codegen-api"],
+                                "estimated_hours": 6,
+                            },
+                            {
+                                "task_id": "critic-review",
+                                "title": "Kod İncelemesi",
+                                "description": "CRUD doğrulama ve basit güvenlik kontrolleri",
+                                "agent_type": "critic",
+                                "dependencies": ["tester-api"],
+                                "estimated_hours": 2,
+                            },
+                        ],
+                    }
+                ],
+            }
+            return SimpleNamespace(content=json.dumps(plan), usage={"mock": True})
+        return SimpleNamespace(content="MOCK_OK", usage={"mock": True})
