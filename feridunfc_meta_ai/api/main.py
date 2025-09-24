@@ -56,3 +56,22 @@ async def execute_sprint(sid: str, max_retries: int = Query(1, ge=0, le=5), _=De
 @app.get("/sprints/{sid}/report", response_model=Dict)
 async def report(sid: str, _=Depends(auth)):
     o = mgr.get(sid); return o.get_sprint_report()
+# --- API Key middleware (auto-added) ---
+from fastapi import Request
+from fastapi.responses import JSONResponse
+
+try:
+    from .dependencies import API_KEY  # type: ignore
+except Exception:   # pragma: no cover
+    import os
+    API_KEY = os.getenv("API_KEY", "dev-secret")
+
+@app.middleware("http")
+async def _api_key_guard(request: Request, call_next):
+    # docs ve health serbest
+    if request.url.path in ("/", "/health") or request.url.path.startswith(("/docs", "/openapi", "/redoc")):
+        return await call_next(request)
+    if request.headers.get("x-api-key") != API_KEY:
+        return JSONResponse({"detail": "Invalid API Key"}, status_code=401)
+    return await call_next(request)
+# --- /API Key middleware ---
