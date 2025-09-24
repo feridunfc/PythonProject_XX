@@ -18,3 +18,6 @@ uvicorn feridunfc_meta_ai.api.main:app --reload
 ```
 
 Auth: `X-API-Key: dev-secret` (ya da `.env` ile değiştirin)
+
+
+> Minor: trace report komutu eklendi.
