@@ -25,3 +25,8 @@ build/
 out/
 workdir/
 gantt.png
+# Editor/OS cruft
+*.bak
+*.bak_*
+*.tmp
+*.log
