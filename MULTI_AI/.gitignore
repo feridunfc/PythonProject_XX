@@ -1,0 +1,32 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+*.db
+.venv/
+venv/
+.env
+*.env
+.python-version
+.pytest_cache/
+.mypy_cache/
+.coverage
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+
+# Proje çıktıları
+out/
+workdir/
+gantt.png
+# Editor/OS cruft
+*.bak
+*.bak_*
+*.tmp
+*.log
