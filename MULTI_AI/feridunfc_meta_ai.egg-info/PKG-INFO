@@ -1,0 +1,26 @@
+Metadata-Version: 2.4
+Name: feridunfc_meta_ai
+Version: 0.4.0
+Summary: Secure & resilient sprint-based multi-agent orchestrator
+Requires-Python: >=3.10
+Requires-Dist: python-dotenv
+Requires-Dist: pydantic>=2
+Requires-Dist: pydantic-settings>=2
+Requires-Dist: anyio
+Requires-Dist: httpx>=0.27
+Requires-Dist: tenacity>=8.2
+Requires-Dist: rich
+Requires-Dist: matplotlib
+Requires-Dist: pandas
+Requires-Dist: openpyxl
+Requires-Dist: typer[all]
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+Requires-Dist: pytest
+Requires-Dist: httpx
+Requires-Dist: loguru
+Requires-Dist: ruff
+Requires-Dist: black
+Requires-Dist: pre-commit
+Requires-Dist: sqlalchemy>=2
+Requires-Dist: docker>=7.1.0
