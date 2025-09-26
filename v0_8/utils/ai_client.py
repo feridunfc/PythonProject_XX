@@ -21,3 +21,5 @@ class AIClient:
         raise AIError('Only mock is bundled in the minimal zip')
 
 # NOTE(#9): If OPENAI_API_KEY is missing, prefer mock (FORCE_PROVIDER=mock).
+
+# NOTE(#9): mock fallback hint
