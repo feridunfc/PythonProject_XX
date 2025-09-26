@@ -15,3 +15,4 @@ trace_log.jsonl
 trace_report.html
 .env
 .env.local
+.idea/
