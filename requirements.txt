@@ -1,13 +1,8 @@
-python-dotenv
-pydantic>=2
-aiohttp
-anyio
-rich
-matplotlib
-pandas
-openpyxl
-typer[all]
-fastapi
-uvicorn
-pytest
-loguru
+python-dotenv>=1.0.0
+httpx>=0.27.0
+tenacity>=8.2.3
+typing-extensions>=4.8.0
+pydantic>=2.5.0
+# İsteğe bağlı client SDK'lar (HTTP ile de çalışıyoruz)
+openai>=1.40.0
+anthropic>=0.31.0
