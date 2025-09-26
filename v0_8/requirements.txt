@@ -3,3 +3,5 @@ tenacity>=9.0.0
 pytest>=8.2.0
 
 pytest-asyncio>=0.23
+
+pytest-asyncio>=0.23.0
