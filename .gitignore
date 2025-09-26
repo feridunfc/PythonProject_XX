@@ -16,3 +16,5 @@ trace_report.html
 .env
 .env.local
 .idea/
+
+*.bak
