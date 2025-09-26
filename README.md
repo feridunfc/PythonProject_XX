@@ -23,3 +23,9 @@ Auth: `X-API-Key: dev-secret` (ya da `.env` ile değiştirin)
 
 
 > Minor: trace report komutu eklendi.
+## Quickstart (v0.8 skeleton)
+
+1. \pip install -r v0_8/requirements.txt\
+2. \cp v0_8/.env.example v0_8/.env\ ve **FORCE_PROVIDER=mock** ayarla
+3. Test: \pytest -q v0_8/tests\
+
