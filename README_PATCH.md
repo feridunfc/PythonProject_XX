@@ -27,3 +27,5 @@ python orchestrator.py --spec "Basit TODO API: kullanÄ±cÄ±, gÃ¶rev ekle/listele"
 - `trace_report.html`
 
 > Not: Anahtar yoksa `FORCE_PROVIDER=mock` ile mock cevaplara dÃ¼ÅŸer.
+
+> Not: MULTI_AI klasörü kaldýrýldý; örnekler kökten çalýþýr.

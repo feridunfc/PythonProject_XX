@@ -15,4 +15,4 @@ Quick demo (PowerShell):
   start .\trace_report.html
 
 Custom paths:
-  python -c "from feridunfc_meta_ai.utils.trace_reporter import generate_html_report as g;     from pathlib import Path; g(Path(r'.\MULTI_AI\trace_log.jsonl'), Path('trace_report.html'))"
+  python -c "from feridunfc_meta_ai.utils.trace_reporter import generate_html_report as g;     from pathlib import Path; g(Path(r'trace_log.jsonl'), Path('trace_report.html'))"
