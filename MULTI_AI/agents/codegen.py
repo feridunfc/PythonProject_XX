@@ -1,9 +1,17 @@
-﻿from typing import Dict, Any
-from agents.base import BaseAgent
+﻿# agents/codegen.py
+from __future__ import annotations
+from typing import Dict, Any
+from .base import BaseAgent
 
 class CodegenAgent(BaseAgent):
-    def __init__(self): super().__init__("codegen")
+    def __init__(self, provider: str | None = None, model: str | None = None):
+        super().__init__("codegen", provider=provider, model=model)
+
     async def build_prompt(self, task: Dict[str, Any]) -> str:
-        ctx = task.get("context","")
-        desc = task.get("description","")
-        return f"Aşağıdaki bağlamı dikkate alarak KOD üret:\n---- CONTEXT ----\n{ctx}\n---- TASK ----\n{desc}\nSadece kod bloğu döndür."
+        plan = task.get("plan") or task.get("text") or task.get("description") or task.get("spec") or ""
+        return (
+            "Aşağıdaki plana/speke uygun üretim kalitesinde kod yaz. "
+            "Gerekiyorsa minimal dosya/dizin yapısı öner. "
+            "Yanıtını KISA tut, kod blokları ve kısa açıklama ver.\n\n"
+            f"PLAN/SPEC:\n{plan}"
+        )

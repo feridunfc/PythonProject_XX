@@ -1,20 +1,17 @@
-# --- local secrets & artifacts ---
+# Local secrets & artefacts
 .env
+.env.local
 trace_log.jsonl
 trace_report.html
 /out/
 /workdir/
 /__pycache__/
 *.pyc
-# --- local secrets & artifacts ---
-.env
-trace_log.jsonl
-trace_report.html
-/out/
-/workdir/
-/__pycache__/
-*.pyc
-.venv/
-.idea/
-.vscode/
 *.log
+# --- local artifacts ---
+/out/
+/workdir/
+trace_log.jsonl
+trace_report.html
+.env
+.env.local
