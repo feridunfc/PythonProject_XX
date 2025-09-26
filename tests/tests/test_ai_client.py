@@ -1,4 +1,4 @@
-import os, pytest
+﻿import os, pytest
 from utils.ai_client import AIClient
 @pytest.mark.asyncio
 async def test_mock_chat():

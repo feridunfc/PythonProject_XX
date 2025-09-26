@@ -1,4 +1,4 @@
-import tempfile, pathlib, py_compile, subprocess, sys
+﻿import tempfile, pathlib, py_compile, subprocess, sys
 from typing import Tuple
 # --- (#10) docker hardening knobs (no behavior change yet) ---
 import os
@@ -9,11 +9,11 @@ def _env_int(name: str, default: int) -> int:
     except ValueError:
         return default
 
-SANDBOX_MEM_LIMIT_MB = _env_int("SANDBOX_MEM_LIMIT_MB", 256)    # örn: 256
-SANDBOX_CPU_SHARES   = _env_int("SANDBOX_CPU_SHARES", 256)      # docker default 1024 bazlı
+SANDBOX_MEM_LIMIT_MB = _env_int("SANDBOX_MEM_LIMIT_MB", 256)    # Ã¶rn: 256
+SANDBOX_CPU_SHARES   = _env_int("SANDBOX_CPU_SHARES", 256)      # docker default 1024 bazlÄ±
 SANDBOX_DISABLE_NET  = os.getenv("SANDBOX_DISABLE_NET", "1") in ("1", "true", "yes")
 
-# İleride Docker runner kullanıldığında bu değerler uygulanacak:
+# Ä°leride Docker runner kullanÄ±ldÄ±ÄŸÄ±nda bu deÄŸerler uygulanacak:
 # - mem_limit=f"{SANDBOX_MEM_LIMIT_MB}m"
 # - cpu_shares=SANDBOX_CPU_SHARES
 # - network_disabled=SANDBOX_DISABLE_NET
