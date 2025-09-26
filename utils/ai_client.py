@@ -1,4 +1,4 @@
-ï»¿# MULTI_AI/utils/ai_client.py
+# utils/ai_client.py
 import os
 import asyncio
 import httpx
@@ -13,7 +13,7 @@ class AIError(Exception):
 
 
 def _map_model_for(provider: str, model: str | None) -> str:
-    """Hedef saÄŸlayÄ±cÄ±ya uygun makul varsayÄ±lan model adÄ±."""
+    """Hedef saðlayýcýya uygun makul varsayýlan model adý."""
     if not model:
         model = ""
     p = (provider or "").lower()
@@ -31,7 +31,7 @@ class AIClient:
         self._client = httpx.AsyncClient(timeout=timeout)
 
     async def _maybe_wait_retry_after(self, r: httpx.Response) -> None:
-        """429 durumunda Retry-After baÅŸlÄ±ÄŸÄ±na saygÄ± gÃ¶ster."""
+        """429 durumunda Retry-After baþlýðýna saygý göster."""
         if r.status_code == 429:
             retry_after = r.headers.get("Retry-After") or r.headers.get("retry-after")
             if retry_after:
@@ -42,7 +42,7 @@ class AIClient:
                 log.warning("429 received, waiting %s seconds per Retry-After", wait_s)
                 await asyncio.sleep(wait_s)
 
-    # DÃœÅžÃœK SEVÄ°YE SAÄžLAYICI Ã‡AÄžRISI (retry burada)
+    # DÜÞÜK SEVÝYE SAÐLAYICI ÇAÐRISI (retry burada)
     @retry(
         stop=stop_after_attempt(6),
         wait=wait_random_exponential(multiplier=1, max=60),
@@ -147,13 +147,13 @@ class AIClient:
         else:
             raise AIError(f"Unknown provider: {provider}")
 
-    # YÃœKSEK SEVÄ°YE CHAT (opsiyonel fallback ile)
+    # YÜKSEK SEVÝYE CHAT (opsiyonel fallback ile)
     async def chat(self, provider: str, model: str, system: str, prompt: str,
                    max_tokens: int = 800, temperature: float = 0.2) -> str:
         try:
             return await self._call(provider, model, system, prompt, max_tokens, temperature)
         except httpx.HTTPStatusError as e:
-            # 429 ise ve fallback aÃ§Ä±ksa (AI_FALLBACK=1), Gemini'ye dÃ¼ÅŸ
+            # 429 ise ve fallback açýksa (AI_FALLBACK=1), Gemini'ye düþ
             if e.response is not None and e.response.status_code == 429:
                 allow_fallback = (os.getenv("AI_FALLBACK", "1") == "1")
                 have_gemini = bool(os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY"))
