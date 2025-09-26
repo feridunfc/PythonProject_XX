@@ -28,3 +28,4 @@ jobs:
 
       - name: Run v0_8 test suite
         run: pytest -q v0_8/tests
+# (#11) matrix & pip cache confirmed; adding harmless comment to trigger PR
