@@ -23,3 +23,26 @@ class AIClient:
 # NOTE(#9): If OPENAI_API_KEY is missing, prefer mock (FORCE_PROVIDER=mock).
 
 # NOTE(#9): mock fallback hint
+# --- (#9) mock fallback & usage logging ---
+import os, time, logging
+
+logging.basicConfig(level=logging.INFO)
+LOGGER = logging.getLogger("ai_client")
+
+def _should_use_mock() -> bool:
+    return os.getenv("FORCE_PROVIDER", "").lower() == "mock" or not os.getenv("OPENAI_API_KEY")
+
+async def chat(messages, model="gpt-4o-mini"):
+    start = time.perf_counter()
+    provider = "mock" if _should_use_mock() else "openai"
+    try:
+        if provider == "mock":
+            # Basit, deterministik yanıt (test/CI için)
+            content = f"[mock:{model}] " + messages[-1]["content"][:100]
+            return {"provider": provider, "model": model, "content": content}
+        else:
+            # Burada gerçek çağrı yer alabilir; testte mock kullanıyoruz
+            raise NotImplementedError("OpenAI adapter will be implemented in v0.9")
+    finally:
+        dur = time.perf_counter() - start
+        LOGGER.info("ai_chat provider=%s model=%s duration=%.3fs", provider, model, dur)
