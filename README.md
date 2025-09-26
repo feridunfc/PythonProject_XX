@@ -1,3 +1,5 @@
+![CI](https://github.com/feridunfc/PythonProject_XX/actions/workflows/ci.yml/badge.svg?branch=main)
+
 # feridunfc_meta_ai (secure MVP 0.4.0)
 
 Bu sürüm; **async + retry** AI çağrıları, **DAG + concurrency** scheduler,
