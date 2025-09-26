@@ -1,4 +1,4 @@
-import asyncio, logging, json
+﻿import asyncio, logging, json
 from agents.planner import PlannerAgent
 from agents.codegen import CodeGenAgent
 from agents.critic import CriticAgent
@@ -22,4 +22,4 @@ async def main_async(spec):
         elif task['id']=='code': ctx=await execu.run_once(codegen, task, ctx)
     log.info('Pipeline finished; summary:\n%s', json.dumps({k:v for k,v in ctx.items() if k in ['plan','files','passed']}, indent=2)); print('DONE')
 if __name__=='__main__':
-    import argparse; p=argparse.ArgumentParser(); p.add_argument('--spec', default='Basit TODO API: kullanıcı, görev ekle/listele'); a=p.parse_args(); asyncio.run(main_async(a.spec))
+    import argparse; p=argparse.ArgumentParser(); p.add_argument('--spec', default='Basit TODO API: kullanÄ±cÄ±, gÃ¶rev ekle/listele'); a=p.parse_args(); asyncio.run(main_async(a.spec))

@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Iterable
+﻿from typing import List, Dict, Any, Iterable
 class TaskScheduler:
     def __init__(self, tasks: List[Dict[str, Any]]): self.tasks=tasks
     def topological(self)->Iterable[Dict[str,Any]]:
