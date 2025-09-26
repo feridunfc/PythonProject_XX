@@ -19,3 +19,6 @@ class SandboxRunner:
                 return proc.returncode, proc.stdout, proc.stderr
             except Exception as e:
                 return 3,'',str(e)
+# NOTE(#10): Hardening idea
+# - network_disabled=True
+# - consider SANDBOX_MEM_LIMIT / SANDBOX_CPU_SHARES envs for limits
