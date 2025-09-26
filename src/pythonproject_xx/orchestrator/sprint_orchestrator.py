@@ -3,8 +3,8 @@ from agents.planner import PlannerAgent
 from agents.codegen import CodeGenAgent
 from agents.critic import CriticAgent
 from agents.tester import TesterAgent
-from orchestrator.task_scheduler import TaskScheduler
-from orchestrator.adaptive_executor import AdaptiveExecutor
+from pythonproject_xx.orchestrator.task_scheduler import TaskScheduler
+from pythonproject_xx.orchestrator.adaptive_executor import AdaptiveExecutor
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(name)s:%(message)s')
 log=logging.getLogger('orchestrator')
 def demo_tasks(spec):
