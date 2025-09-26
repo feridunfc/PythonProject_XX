@@ -7,6 +7,11 @@ from agents.architect import ArchitectAgent
 from agents.codegen import CodegenAgent
 from agents.critic import CriticAgent
 from agents.tester import TesterAgent
+from agents.architect import ArchitectAgent
+from agents.codegen   import CodegenAgent
+from agents.critic    import CriticAgent
+from agents.tester    import TesterAgent
+# from agents.debugger  import DebuggerAgent  # varsa aç
 
 load_dotenv()
 logging.basicConfig(

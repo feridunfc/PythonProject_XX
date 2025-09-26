@@ -1,52 +1,29 @@
+# MULTI_AI Patch — Plan & Execute + Trace + Env
 
-# MULTI_AI Full Patch (RAG + Plan&Execute + Scheduler + Trace + Dashboard)
+Bu paket, MULTI_AI köküne **üzerine yaz (overwrite)** uygulanacak minimal bir yamadır.
+
+## İçerik
+- `.env.example` — örnek anahtarlar
+- `requirements.txt` — güncel bağımlılıklar
+- `.gitignore` — güvenli girdiler eklendi
+- `config/agent_config.py` — rol→model eşlemesi
+- `utils/ai_client.py` — OpenAI/Anthropic + retry + mock
+- `utils/trace_manager.py` — JSONL trace
+- `utils/trace_reporter.py` — HTML rapor (f-string ile güvenli)
+- `agents/codegen.py` — Plan & Execute
+- `orchestrator.py` — basit pipeline + trace + rapor
 
 ## Kurulum
-1) ZIP'i repo köküne açın (üzerine yazabilirsiniz).
-2) Gerekli paketler:
-    ```bash
-    pip install -r requirements.txt
-    pip install -r requirements.extra.txt   # RAG & Dashboard için
-    ```
-3) .env
-    ```
-    FORCE_PROVIDER=gemini
-    AI_ALLOW_MOCK=1
-    AI_RETRY_429=0
-    GEMINI_API_KEY=...   # veya OPENAI_API_KEY / DEEPSEEK_API_KEY
-    RAG_ENABLED=1
-    EMBED_MODEL=all-MiniLM-L6-v2
-    ```
-
-## RAG İndeksleme
-```python
-from feridunfc_meta_ai.memory.rag import index_codebase
-index_codebase(workdir=".")
+```powershell
+# kökte .env oluştur
+Copy-Item .env.example .env
+# en az bir anahtar girin veya FORCE_PROVIDER=mock kullanın
+pip install -r requirements.txt
+python orchestrator.py --spec "Basit TODO API: kullanıcı, görev ekle/listele" --report
 ```
 
-## Trace Raporu
-```bash
-python -c "from feridunfc_meta_ai.utils.trace_reporter import generate_html_report as g; g()"
-start trace_report.html
-```
+Çıktılar:
+- `trace_log.jsonl`
+- `trace_report.html`
 
-## Dashboard
-```bash
-streamlit run feridunfc_meta_ai/web/dashboard.py
-```
-
-## Orchestrator (örnek akış)
-```python
-import anyio
-from feridunfc_meta_ai.orchestrator.sprint_orchestrator import SprintOrchestrator
-
-async def main():
-    orch = SprintOrchestrator(concurrency=2)
-    await orch.initialize(workdir=".")
-    await orch.plan_sprint_from_requirements("Basit TODO API: kullanıcı, görev ekle/listele")
-    res = await orch.execute_sprint(max_workers=2)
-    print(res)
-    await orch.aclose()
-
-anyio.run(main)
-```
+> Not: Anahtar yoksa `FORCE_PROVIDER=mock` ile mock cevaplara düşer.
