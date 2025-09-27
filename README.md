@@ -29,3 +29,8 @@ Auth: `X-API-Key: dev-secret` (ya da `.env` ile deÄŸiÅŸtirin)
 2. \cp v0_8/.env.example v0_8/.env\ ve **FORCE_PROVIDER=mock** ayarla
 3. Test: \pytest -q v0_8/tests\
 
+
+
+### Reporting & Integrations
+- \pythonproject_xx.reporting.run_report.build_report_md('logs/trace.jsonl')\ ile Markdown rapor üretir.
+- PR açmak için \GITHUB_TOKEN\ ve \GITHUB_REPOSITORY\ ayarla (token yoksa no-op).
