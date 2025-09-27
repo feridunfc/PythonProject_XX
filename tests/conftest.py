@@ -1,6 +1,6 @@
-import sys
+ï»¿import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]  # v0_8 kökü
+ROOT = Path(__file__).resolve().parents[1]  # v0_8 kÃ¶kÃ¼
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))

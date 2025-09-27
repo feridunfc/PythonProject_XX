@@ -1,4 +1,4 @@
-import os, httpx
+﻿import os, httpx
 from tenacity import retry, stop_after_attempt, wait_random_exponential, retry_if_exception_type
 DEFAULT_MODEL='gpt-4o-mini'
 class AIError(Exception):
@@ -37,11 +37,11 @@ async def chat(messages, model="gpt-4o-mini"):
     provider = "mock" if _should_use_mock() else "openai"
     try:
         if provider == "mock":
-            # Basit, deterministik yanıt (test/CI için)
+            # Basit, deterministik yanÄ±t (test/CI iÃ§in)
             content = f"[mock:{model}] " + messages[-1]["content"][:100]
             return {"provider": provider, "model": model, "content": content}
         else:
-            # Burada gerçek çağrı yer alabilir; testte mock kullanıyoruz
+            # Burada gerÃ§ek Ã§aÄŸrÄ± yer alabilir; testte mock kullanÄ±yoruz
             raise NotImplementedError("OpenAI adapter will be implemented in v0.9")
     finally:
         dur = time.perf_counter() - start
