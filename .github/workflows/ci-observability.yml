@@ -17,6 +17,18 @@ jobs:
           pip install -r requirements.txt
           pip install pytest-cov
 
+      - name: Sanity check (pytest & plugins)
+        run: |
+          set -euxo pipefail
+          python -V
+          python - <<'PY'
+import pkgutil, pytest
+print("pytest version:", pytest.__version__)
+print("has pytest_asyncio:", bool(pkgutil.find_loader("pytest_asyncio")))
+print("has pytest_anyio:", bool(pkgutil.find_loader("pytest_anyio")))
+PY
+          pip freeze | grep -E '^(pytest(-asyncio|-anyio)?|pytest==)' || true
+
       - name: Run tests with tracing
         env:
           PYTHONPATH: .
@@ -24,7 +36,10 @@ jobs:
           OBS_BACKENDS: jsonl
           TRACE_SERVICE_NAME: pythonproject_xx
           TRACE_JSONL_PATH: trace_log.jsonl
-        run: python -m pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=xml:coverage.xml --junitxml=pytest-report.xml
+        run: |
+          set -o pipefail
+          python -m pytest -vv --maxfail=1 --disable-warnings --cov=. --cov-report=xml:coverage.xml --junitxml=pytest-report.xml 2>&1 | tee pytest-console.log
+          exit ${PIPESTATUS[0]}
 
       - name: Print diagnostics (always)
         if: always()
@@ -37,6 +52,8 @@ jobs:
           head -n 40 coverage.xml || echo "no coverage.xml"
           echo "== trace tail =="
           tail -n 120 trace_log.jsonl || true
+          echo "== console head =="
+          head -n 120 pytest-console.log || true
 
       - name: Ensure trace file exists
         if: always()
@@ -51,4 +68,5 @@ jobs:
             trace_log.jsonl
             coverage.xml
             pytest-report.xml
+            pytest-console.log
           if-no-files-found: ignore
