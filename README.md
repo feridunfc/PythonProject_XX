@@ -29,9 +29,3 @@ Auth: `X-API-Key: dev-secret` (ya da `.env` ile deÄŸiÅŸtirin)
 2. \cp .env.example .env\ ve **FORCE_PROVIDER=mock** ayarla
 3. Test: \PYTHONPATH=src pytest -q\
 
-
-### ReAct limits & self-correction
-- `SELF_CHECK_EVERY` (default: 3)
-- `MAX_TOOL_CALLS` (default: 20)
-- `MAX_COST_USD` (default: 1.0)
-- `MOCK_AI=true` ile LLM çağrıları mock & deterministik olur.
