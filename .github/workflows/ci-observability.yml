@@ -28,9 +28,7 @@ jobs:
           TRACE_SERVICE_NAME: pythonproject_xx
           TRACE_JSONL_PATH: trace_log.jsonl
         run: |
-          python -m pytest -q --maxfail=1 --disable-warnings ^
-            --cov=. --cov-report=xml:coverage.xml ^
-            --junitxml=pytest-report.xml
+          python -m pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=xml:coverage.xml --junitxml=pytest-report.xml
 
       - name: Ensure trace file exists
         if: always()
