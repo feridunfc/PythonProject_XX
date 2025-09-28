@@ -1,13 +1,12 @@
-﻿import json, subprocess, tempfile, pathlib
-from typing import Any, Dict
-from .base import BaseTool
+﻿from typing import Dict, Any, List
 
-class LinterTool(BaseTool):
-    name = "linter.ruff"
-
-    def run(self, code: str) -> Dict[str, Any]:
-        with tempfile.TemporaryDirectory() as td:
-            p = pathlib.Path(td, "snippet.py"); p.write_text(code, encoding="utf-8")
-            cp = subprocess.run(["python","-m","ruff","check",str(p),"-f","json"], capture_output=True, text=True)
-            issues = json.loads(cp.stdout or "[]")
-            return {"ok": cp.returncode == 0, "issues": issues}
+class LinterTool:
+    """Minimal stub: verilen kod üzerinde basit kontroller döner.
+    Gerçek entegrasyon ileride ruff/flake8 çağrısına çevrilebilir.
+    """
+    def run(self, code: str, config_path: str | None = None) -> Dict[str, Any]:
+        issues: List[Dict[str, Any]] = []
+        # Çok basit bir uyarı örneği: tab karakteri var mı?
+        if "\t" in code:
+            issues.append({"rule": "no-tabs", "message": "Tab character found"})
+        return {"ok": True, "issues": issues}

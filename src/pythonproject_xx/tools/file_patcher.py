@@ -1,13 +1,16 @@
-﻿import difflib, pathlib
-from typing import Any, Dict
-from .base import BaseTool
+﻿from pathlib import Path
+from typing import Dict, Any
 
-class FilePatcherTool(BaseTool):
-    name = "file.patch"
-
-    def run(self, path: str, content_new: str) -> Dict[str, Any]:
-        p = pathlib.Path(path)
-        old = p.read_text(encoding="utf-8") if p.exists() else ""
-        p.write_text(content_new, encoding="utf-8")
-        diff = "".join(difflib.unified_diff(old.splitlines(True), content_new.splitlines(True), fromfile="old", tofile="new"))
-        return {"ok": True, "diff": diff}
+class FilePatcherTool:
+    """Basit dosya yazma/patch ekleme aracı (güvenli stub)."""
+    def run(self, path: str, content_new: str | None = None, patch: str | None = None) -> Dict[str, Any]:
+        p = Path(path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        if content_new is not None:
+            p.write_text(content_new, encoding="utf-8")
+            return {"ok": True, "path": str(p), "mode": "write"}
+        if patch is not None:
+            with p.open("a", encoding="utf-8") as f:
+                f.write(patch)
+            return {"ok": True, "path": str(p), "mode": "append-patch"}
+        return {"ok": False, "error": "no_input"}
