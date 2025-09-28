@@ -62,7 +62,7 @@ class ReactRunner:
             "Answer strictly with CONTINUE or STOP."
         )
         out = self.ai.chat(model="cheap", messages=[{"role":"user","content":prompt}])
-.event("llm.chat", {"role": self.role})
+        obs.event("llm.chat", {"role": self.role})obs.event("llm.chat", {"role": self.role})
         text = (out or "").strip().lower()
         decision = "stop" if "stop" in text else "continue"
         self.cost_usd += 0.0001
@@ -95,14 +95,14 @@ class ReactRunner:
                     return {"ok": False, "error": f"unknown_tool:{step.name}",
                             "history": self.history}
                 last = tool.run(**(step.args or {}))
-.event("tool.run", {"name": step.name, "role": self.role, "args": step.args or {}})
+                obs.event("tool.run", {"name": step.name, "role": self.role, "args": step.args or {}})obs.event("tool.run", {"name": step.name, "role": self.role, "args": step.args or {}})
                 self.tool_calls += 1
                 self.history.append({"kind": "tool", "name": step.name,
                                      "args": step.args or {}, "result": last})
 
             elif step.kind == "llm":
-                out = self.ai.chat(messages=[{"role":"user","content": step.args.get("prompt","")}])
-.event("llm.chat", {"role": self.role})
+                out = self.ai.chat(model="cheap", messages=[{"role":"user","content":prompt}])
+                obs.event("llm.chat", {"role": self.role})obs.event("llm.chat", {"role": self.role})
                 last = {"llm": out}
                 self.cost_usd += 0.0001
                 self.history.append({"kind": "llm",
@@ -114,7 +114,7 @@ class ReactRunner:
 
             # her adım sonrası sanity check
             sc = self._sanity_check()
-.event("react.sanity_check", {"decision": sc.get("decision"), "steps": len(self.history)})
+obs.event("react.sanity_check", {"decision": sc.get("decision"), "steps": len(self.history)})
             if sc.get("decision") == "stop":
                 return {"ok": True, "stopped_by": "sanity_check",
                         "result": last, "history": self.history}
