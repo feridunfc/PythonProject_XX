@@ -4,7 +4,7 @@ from typing import Dict, List, Set, Any
 from pythonproject_xx.agents.planner_agent import ExecutionPlan, PlanStep
 from pythonproject_xx.tools.linter import LinterTool
 from pythonproject_xx.tools.file_patcher import FilePatcherTool
-from pythonproject_xx.utils.ai_client import AIClient
+from pythonproject_xx.utils.ai_client import AIClient`nfrom pythonproject_xx.observability.obs import obs
 
 # --- tool registry
 TOOL_REGISTRY: Dict[str, Any] = {
@@ -60,7 +60,7 @@ class ReactRunner:
             f"History (JSON-like): {self.history}\n\n"
             "Answer strictly with CONTINUE or STOP."
         )
-        out = self.ai.chat(model="cheap", messages=[{"role":"user","content":prompt}])
+        out = self.ai.chat(model="cheap", messages=[{"role":"user","content":prompt}])`n        obs.event("llm.chat", {"role": self.role})
         text = (out or "").strip().lower()
         decision = "stop" if "stop" in text else "continue"
         self.cost_usd += 0.0001
@@ -92,13 +92,13 @@ class ReactRunner:
                 if not tool:
                     return {"ok": False, "error": f"unknown_tool:{step.name}",
                             "history": self.history}
-                last = tool.run(**(step.args or {}))
+                last = tool.run(**(step.args or {}))`n                obs.event("tool.run", {"name": step.name, "role": self.role, "args": step.args or {}})
                 self.tool_calls += 1
                 self.history.append({"kind": "tool", "name": step.name,
                                      "args": step.args or {}, "result": last})
 
             elif step.kind == "llm":
-                out = self.ai.chat(messages=[{"role":"user","content": step.args.get("prompt","")}])
+                out = self.ai.chat(messages=[{"role":"user","content": step.args.get("prompt","")}])`n                obs.event("llm.chat", {"role": self.role})
                 last = {"llm": out}
                 self.cost_usd += 0.0001
                 self.history.append({"kind": "llm",
@@ -109,7 +109,7 @@ class ReactRunner:
                 return {"ok": True, "result": last, "history": self.history}
 
             # her adım sonrası sanity check
-            sc = self._sanity_check()
+            sc = self._sanity_check()`n            obs.event("react.sanity_check", {"decision": sc.get("decision"), "steps": len(self.history)})
             if sc.get("decision") == "stop":
                 return {"ok": True, "stopped_by": "sanity_check",
                         "result": last, "history": self.history}

@@ -6,3 +6,5 @@ pydantic>=2.5.0
 # İsteğe bağlı client SDK'lar (HTTP ile de çalışıyoruz)
 openai>=1.40.0
 anthropic>=0.31.0
+opentelemetry-sdk>=1.25.0
+opentelemetry-exporter-otlp-proto-http>=1.25.0
