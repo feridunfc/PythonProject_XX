@@ -1,8 +1,5 @@
 ﻿name: CI Observability
-on:
-  push:
-  pull_request:
-  workflow_dispatch:
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   traces:
@@ -28,7 +25,20 @@ jobs:
           TRACE_SERVICE_NAME: pythonproject_xx
           TRACE_JSONL_PATH: trace_log.jsonl
         run: |
-          python -m pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=xml:coverage.xml --junitxml=pytest-report.xml
+          python -m pytest -q --maxfail=1 --disable-warnings \
+            --cov=. --cov-report=xml:coverage.xml --junitxml=pytest-report.xml
+
+      - name: Print diagnostics (always)
+        if: always()
+        run: |
+          echo "== ls -la =="
+          ls -la
+          echo "== pytest-report head =="
+          head -n 80 pytest-report.xml || true
+          echo "== coverage head =="
+          head -n 40 coverage.xml || echo "no coverage.xml"
+          echo "== trace tail =="
+          tail -n 120 trace_log.jsonl || true
 
       - name: Ensure trace file exists
         if: always()
@@ -43,14 +53,4 @@ jobs:
             trace_log.jsonl
             coverage.xml
             pytest-report.xml
-          if-no-files-found: ignore      - name: Print diagnostics (always)
-        if: always()
-        run: |
-          echo "== ls -la =="
-          ls -la
-          echo "== pytest-report head =="
-          head -n 80 pytest-report.xml || true
-          echo "== coverage head =="
-          head -n 40 coverage.xml || echo "no coverage.xml"
-          echo "== trace tail =="
-          tail -n 120 trace_log.jsonl || true
+          if-no-files-found: ignore
