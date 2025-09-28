@@ -3,40 +3,46 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+
 jobs:
   traces:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: python -m pip install --upgrade pip
-      - run: pip install -r requirements.txt
 
-      # (opsiyonel) Pytest kurulumunu doğrula
-      - name: Debug: show pytest location
+      - name: Install deps
         run: |
-          python -c "import sys,pytest; print('py',sys.executable,'pytest',pytest.__version__)"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest-cov
 
-      - name: Run tests with tracing enabled
+      - name: Run tests with tracing
         env:
-          PYTHONPATH: src
+          PYTHONPATH: .
           MOCK_AI: "true"
           OBS_BACKENDS: jsonl
           TRACE_SERVICE_NAME: pythonproject_xx
           TRACE_JSONL_PATH: trace_log.jsonl
-        run: python -m pytest -q
+        run: |
+          python -m pytest -q --maxfail=1 --disable-warnings ^
+            --cov=. --cov-report=xml:coverage.xml ^
+            --junitxml=pytest-report.xml
 
-      # Test erken fail olsa bile trace dosyası yüklensin
       - name: Ensure trace file exists
         if: always()
-        run: test -f trace_log.jsonl || echo '{"note":"no traces (tests failed early)"}' > trace_log.jsonl
+        run: test -f trace_log.jsonl || echo '{}' > trace_log.jsonl
 
-      - name: Upload trace jsonl
+      - name: Upload observability artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: traces-jsonl
-          path: trace_log.jsonl
+          name: observability-artifacts
+          path: |
+            trace_log.jsonl
+            coverage.xml
+            pytest-report.xml
           if-no-files-found: ignore
