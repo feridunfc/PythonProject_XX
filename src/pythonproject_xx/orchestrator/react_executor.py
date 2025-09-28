@@ -4,7 +4,8 @@ from typing import Dict, List, Set, Any
 from pythonproject_xx.agents.planner_agent import ExecutionPlan, PlanStep
 from pythonproject_xx.tools.linter import LinterTool
 from pythonproject_xx.tools.file_patcher import FilePatcherTool
-from pythonproject_xx.utils.ai_client import AIClient`nfrom pythonproject_xx.observability.obs import obs
+from pythonproject_xx.utils.ai_client import AIClient
+from pythonproject_xx.observability.obs import obs
 
 # --- tool registry
 TOOL_REGISTRY: Dict[str, Any] = {

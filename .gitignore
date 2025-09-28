@@ -18,3 +18,5 @@ trace_report.html
 .idea/
 
 *.bak
+
+trace_log.jsonl
