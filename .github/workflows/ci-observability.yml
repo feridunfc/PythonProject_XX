@@ -24,9 +24,7 @@ jobs:
           OBS_BACKENDS: jsonl
           TRACE_SERVICE_NAME: pythonproject_xx
           TRACE_JSONL_PATH: trace_log.jsonl
-        run: |
-          python -m pytest -q --maxfail=1 --disable-warnings \
-            --cov=. --cov-report=xml:coverage.xml --junitxml=pytest-report.xml
+        run: python -m pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=xml:coverage.xml --junitxml=pytest-report.xml
 
       - name: Print diagnostics (always)
         if: always()
