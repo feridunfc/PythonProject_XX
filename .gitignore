@@ -20,3 +20,5 @@ trace_report.html
 *.bak
 
 trace_log.jsonl
+
+trace_log.jsonl
