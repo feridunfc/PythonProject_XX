@@ -12,7 +12,7 @@ class ExecutionPlan:
     steps: List[PlanStep]
 
 class PlannerAgent:
-    """Basit bir planlayıcı: örnek olarak linter -> finish zinciri döner."""
+    """Basit planlayıcı: lint -> finish zinciri üretebilir."""
     def __init__(self, role: str = "codegen"):
         self.role = role
 
@@ -23,7 +23,13 @@ class PlannerAgent:
             PlanStep(kind="finish"),
         ])
 
-    # yaygın isimlere alias verelim (test hangi ismi çağırırsa çalışsın)
+    # Testlerin çağırdığı isimler:
+    def plan_for_lint(self, code: str) -> ExecutionPlan:
+        return ExecutionPlan(steps=[
+            PlanStep(kind="tool", name="linter.ruff", args={"code": code}),
+            PlanStep(kind="finish"),
+        ])
+
     def build_plan(self, *args, **kwargs) -> ExecutionPlan:
         return self.plan(**kwargs)
 
