@@ -15,7 +15,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest-cov
+          pip install pytest-cov pytest-asyncio pytest-anyio
+
+      # Her koşulda oluşsun ki artefact daima yüklensin
+      - name: Pre-create logs (always)
+        if: always()
+        run: |
+          : > trace_log.jsonl
+          : > pytest-console.log
 
       - name: Sanity check (pytest & plugins)
         run: |
@@ -23,7 +30,7 @@ jobs:
           python -V
           python - <<'PY'
 import pkgutil, pytest
-print("pytest version:", pytest.__version__)
+print("pytest:", pytest.__version__)
 print("has pytest_asyncio:", bool(pkgutil.find_loader("pytest_asyncio")))
 print("has pytest_anyio:", bool(pkgutil.find_loader("pytest_anyio")))
 PY
@@ -36,9 +43,12 @@ PY
           OBS_BACKENDS: jsonl
           TRACE_SERVICE_NAME: pythonproject_xx
           TRACE_JSONL_PATH: trace_log.jsonl
+          # Deterministik plugin yükleme:
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+          PYTEST_ADDOPTS: "-p pytest_asyncio -p pytest_anyio -p pytest_cov"
         run: |
           set -o pipefail
-          python -m pytest -vv --maxfail=1 --disable-warnings --cov=. --cov-report=xml:coverage.xml --junitxml=pytest-report.xml 2>&1 | tee pytest-console.log
+          python -m pytest -vv --maxfail=1 --disable-warnings --cov=. --cov-report=xml:coverage.xml --junitxml=pytest-report.xml 2>&1 | tee -a pytest-console.log
           exit ${PIPESTATUS[0]}
 
       - name: Print diagnostics (always)
@@ -55,10 +65,6 @@ PY
           echo "== console head =="
           head -n 120 pytest-console.log || true
 
-      - name: Ensure trace file exists
-        if: always()
-        run: test -f trace_log.jsonl || echo '{}' > trace_log.jsonl
-
       - name: Upload observability artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -69,4 +75,4 @@ PY
             coverage.xml
             pytest-report.xml
             pytest-console.log
-          if-no-files-found: ignore
+          if-no-files-found: warn
