@@ -1,17 +1,12 @@
-﻿# agents/architect.py
-from __future__ import annotations
-from typing import Dict, Any
-from .base import BaseAgent
+﻿from typing import Callable, Dict
 
-class ArchitectAgent(BaseAgent):
-    def __init__(self, provider: str | None = None, model: str | None = None):
-        super().__init__("architect", provider=provider, model=model)
+class ArchitectAgent:
+    def __init__(self, model: str, llm: Callable[[str,str,float], str] | None = None):
+        self.model = model
+        self.llm = llm
 
-    async def build_prompt(self, task: Dict[str, Any]) -> str:
-        spec = task.get("spec") or task.get("description") or ""
-        return (
-            "Aşağıdaki gereksinim için üst seviye tasarım çıkar.\n"
-            "- Ana modüller\n- Dosya/dizin yapısı\n- Veri modelleri (özet)\n"
-            "- API uçları (özet)\n- Riskler & notlar (kısa)\n\n"
-            f"GEREKSİNİM:\n{spec}"
-        )
+    def handle(self, context: Dict) -> Dict:
+        spec = context.get("spec","")
+        prompt = f"Design a high-level architecture for: {spec}"
+        design = self.llm(self.model, prompt) if self.llm else f"Design for {spec}"
+        return {"design": design}

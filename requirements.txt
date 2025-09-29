@@ -3,7 +3,12 @@ httpx>=0.27.0
 tenacity>=8.2.3
 typing-extensions>=4.8.0
 pydantic>=2.5.0
-# Ä°steÄŸe baÄŸlÄ± client SDK'lar (HTTP ile de Ã§alÄ±ÅŸÄ±yoruz)
+# İsteğe bağlı client SDK'lar (HTTP ile de çalışıyoruz)
 openai>=1.40.0
 anthropic>=0.31.0
-PyGithub>=2.3.0
+
+pytest>=8.0.0
+
+pytest-asyncio>=0.23.0
+
+pytest-anyio

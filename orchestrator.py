@@ -1,70 +1,110 @@
-import os
+﻿import os
 import uuid
-import argparse
-import logging
+import importlib
+from typing import Dict, List, Optional, Callable
 
 from dotenv import load_dotenv
+from obs import event as obs_event
+
+# OpenAI 1.x client
+try:
+    from openai import OpenAI
+except Exception:  # pragma: no cover
+    OpenAI = None  # type: ignore
+
 load_dotenv()
 
-from utils.trace_manager import log_trace
-from utils.trace_reporter import generate_html_report
-
-# Var olan dosyaları değiştirmiyoruz: architect.py, critic.py, tester.py
-# Hepsinde `class Agent` ve `handle(context)` arayüzü olduğunu varsayıyoruz.
-from agents.architect import ArchitectAgent
-from agents.codegen import CodegenAgent   # Plan & Execute sürümü (bu patch ile gelir)
-from agents.critic import CriticAgent
-from agents.tester import TesterAgent
-
-logging.basicConfig(level=getattr(logging, os.getenv("LOG_LEVEL","INFO").upper(), logging.INFO))
-logger = logging.getLogger("orchestrator")
+def _mock_enabled() -> bool:
+    v = os.getenv("MOCK_AI", "true").strip().lower()
+    return v in ("1","true","yes","on")
 
 class Orchestrator:
-    def __init__(self):
-        self.architect = ArchitectAgent(model=os.getenv("ARCHITECT_MODEL","gpt-4o-mini"))
-        self.codegen = CodegenAgent(model=os.getenv("CODEGEN_MODEL","gpt-4o-mini"))
-        self.critic = CriticAgent(model=os.getenv("CRITIC_MODEL","gpt-4o-mini"))
-        self.tester = TesterAgent(model=os.getenv("TESTER_MODEL","gpt-4o-mini"))
+    """
+    Basit sıralı orkestratör.
+    - agents/<role>.py içindeki sınıf adları ROLE_CLASS_MAP ile çözülür.
+    - LLM çağrısı execute_with_model üzerinden yapılır; MOCK_AI varsa deterministik döner.
+    - Obs: pipeline/agent/llm eventleri JSONL'e yazılabilir.
+    """
+    ROLE_CLASS_MAP: Dict[str, str] = {
+        "architect":     "ArchitectAgent",
+        "algo_designer": "AlgoDesignerAgent",
+        "codegen":       "CodeGenAgent",
+        "tester":        "TesterAgent",
+        "debugger":      "DebuggerAgent",
+        "critic":        "CriticAgent",
+        "integrator":    "IntegratorAgent",
+        "knowledge":     "KnowledgeAgent",
+    }
 
-    def run(self, spec: str, make_report: bool = False):
-        task_id = str(uuid.uuid4())
-        ctx = {"task_id": task_id, "spec": spec}
+    def __init__(self,
+                 mapping: Optional[Dict[str, str]] = None,
+                 sequence: Optional[List[str]] = None) -> None:
+        self.mapping = mapping or {
+            "architect":      "gpt-4o-mini",
+            "algo_designer":  "gpt-4o-mini",
+            "codegen":        "gpt-4o-mini",
+            "tester":         "gpt-4o-mini",
+            "debugger":       "gpt-4o-mini",
+            "critic":         "gpt-4o-mini",
+            "integrator":     "gpt-4o-mini",
+            "knowledge":      "gpt-4o-mini",
+        }
+        self.sequence = sequence or list(self.ROLE_CLASS_MAP.keys())
+        self.history: List[Dict] = []
 
-        logger.info("Pipeline start task_id=%s", task_id)
-        # 1) Mimari
-        arch = self.architect.handle(ctx)
-        log_trace("ArchitectAgent", task_id, ctx, arch)
+        # OpenAI 1.x client (MOCK ise None, gerçek çağrı yapılmaz)
+        self._client = None
+        if not _mock_enabled() and OpenAI is not None:
+            api_key = os.getenv("OPENAI_API_KEY")
+            if api_key:
+                # OpenAI() zaten ortamdan anahtarı alır; eksplisit de geçebiliriz
+                self._client = OpenAI()
 
-        # 2) Kod üretimi (plan & execute)
-        code = self.codegen.handle({**ctx, **arch})
-        log_trace("CodegenAgent", task_id, arch, code)
+    # LLM çağrısı: ajanlara callable olarak verilir
+    def execute_with_model(self, model: str, prompt: str, temperature: float = 0.2) -> str:
+        if _mock_enabled() or self._client is None:
+            text = f"[MOCK:{model}] {prompt[:64]}"
+            obs_event("llm.chat", {"model": model, "mock": True})
+            return text
 
-        # 3) Eleştiri
-        critique = self.critic.handle({**ctx, **code})
-        log_trace("CriticAgent", task_id, code, critique)
+        # OpenAI 1.x
+        resp = self._client.chat.completions.create(
+            model=model,
+            messages=[{"role": "user", "content": prompt}],
+            temperature=temperature,
+        )
+        out = resp.choices[0].message.content or ""
+        obs_event("llm.chat", {"model": model, "mock": False})
+        return out
 
-        # 4) Test
-        test_res = self.tester.handle({**ctx, **code})
-        log_trace("TesterAgent", task_id, code, test_res)
+    def run(self, spec: str) -> Dict:
+        run_id = str(uuid.uuid4())[:8]
+        ctx: Dict = {"spec": spec, "run_id": run_id}
+        obs_event("pipeline.start", {"run_id": run_id, "spec": spec})
 
-        logger.info("Pipeline finished task_id=%s", task_id)
-
-        if make_report:
+        for role in self.sequence:
+            model = self.mapping.get(role, "gpt-4o-mini")
             try:
-                generate_html_report()
-            except FileNotFoundError:
-                logger.warning("Trace file not found for report generation. Skipping.")
-        return {"task_id": task_id, "arch": arch, "code": code, "critique": critique, "test": test_res}
+                mod = importlib.import_module(f"agents.{role}")
+                cls_name = self.ROLE_CLASS_MAP[role]
+                AgentCls = getattr(mod, cls_name)
+                agent = AgentCls(model=model, llm=self.execute_with_model)
+                obs_event("agent.start", {"role": role, "model": model})
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--spec", required=True, help="İş tanımı / gereksinim")
-    ap.add_argument("--report", action="store_true", help="Çalışma sonunda HTML trace raporu üret")
-    args = ap.parse_args()
+                output = agent.handle(ctx) or {}
+                self.history.append({"role": role, "output": output})
+                ctx.update(output)
 
-    orch = Orchestrator()
-    res = orch.run(args.spec, make_report=args.report)
-    print("DONE:", res["task_id"])
+                obs_event("agent.done", {"role": role, "keys": list(output.keys())})
+            except Exception as e:  # pragma: no cover (negatif akış)
+                obs_event("agent.error", {"role": role, "error": str(e)})
+                break
+
+        obs_event("pipeline.done", {"run_id": run_id, "ctx_keys": list(ctx.keys())})
+        return ctx
+
 
 if __name__ == "__main__":
-    main()
+    orch = Orchestrator()
+    result = orch.run("Implement quicksort")
+    print(result)
