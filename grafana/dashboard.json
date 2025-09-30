@@ -1,0 +1,18 @@
+﻿{
+  "title": "Meta AI Orchestrator – Overview",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Monthly Cost (USD)",
+      "targets": [{ "expr": "sum(cost_usd_total)" }]
+    },
+    {
+      "type": "timeSeries",
+      "title": "Tasks Completed / h",
+      "targets": [{ "expr": "rate(tasks_completed_total[1h])" }]
+    }
+  ],
+  "time": { "from": "now-24h", "to": "now" },
+  "schemaVersion": 38,
+  "version": 1
+}

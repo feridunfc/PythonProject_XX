@@ -1,0 +1,10 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  name: multi-ai
+spec:
+  type: {{ .Values.service.type }}
+  selector: { app: multi-ai }
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: 8000

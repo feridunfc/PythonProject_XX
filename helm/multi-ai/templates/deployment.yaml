@@ -1,0 +1,17 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multi-ai
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels: { app: multi-ai }
+  template:
+    metadata:
+      labels: { app: multi-ai }
+    spec:
+      containers:
+      - name: orchestrator
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports: [{ containerPort: 8000 }]
+        securityContext: {{- toYaml .Values.containerSecurityContext | nindent 10 }}

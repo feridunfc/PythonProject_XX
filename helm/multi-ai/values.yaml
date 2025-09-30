@@ -1,0 +1,13 @@
+﻿replicaCount: 1
+image:
+  repository: ghcr.io/feridunfc/multi-ai
+  tag: v0.9.0
+podSecurityContext: {}
+containerSecurityContext:
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop: ["ALL"]
+service:
+  type: ClusterIP
+  port: 8000
