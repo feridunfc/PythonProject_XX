@@ -8,4 +8,6 @@ jobs:
   traces:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "ok"; python --version
+      - run: |
+          echo "ok"
+          python --version
