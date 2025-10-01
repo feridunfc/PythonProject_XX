@@ -1,0 +1,14 @@
+name: Actions Sanity
+on:
+  workflow_dispatch:
+  push:
+    branches: [ feature/security-and-sprint ]
+
+permissions:
+  contents: read
+
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "hello from $(uname -a)"
