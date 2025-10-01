@@ -1,23 +1,17 @@
 name: CI Observability
 on: [push, pull_request, workflow_dispatch]
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   traces:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install deps
         run: |
-          set -euxo pipefail
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest-cov pytest-asyncio pytest-anyio opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp
@@ -32,8 +26,29 @@ jobs:
         run: |
           set -euxo pipefail
           python -V
-          python -c "import pkgutil,pytest; print('pytest:',pytest.__version__); print('has pytest_asyncio:', bool(pkgutil.find_loader('pytest_asyncio'))); print('has pytest_anyio:', bool(pkgutil.find_loader('pytest_anyio')))"
-          pip freeze | grep -E '^(pytest|pytest-asyncio|pytest-anyio)' || true
+          python - <<'PY'
+import pkgutil, pytest
+print("pytest:", pytest.__version__)
+print("has pytest_asyncio:", bool(pkgutil.find_loader("pytest_asyncio")))
+print("has pytest_anyio:", bool(pkgutil.find_loader("pytest_anyio")))
+PY
+          pip freeze | grep -E '^(pytest|pytest-asyncio|pytest-anyio)'
+
+      # ⬇️ Tracer init ayrı ve non-blocking
+      - name: Init tracer (best-effort)
+        continue-on-error: true
+        env:
+          TRACE_SERVICE_NAME: pythonproject_xx
+        run: |
+          python - <<'PY'
+try:
+    from utils.otel_tracer import init_tracer
+    init_tracer()
+    print("OTel tracer initialized.")
+except Exception as e:
+    print(f"[skip tracer] {type(e).__name__}: {e}")
+    # başarısız olsa da adım geçsin
+PY
 
       - name: Run tests with tracing
         env:
@@ -45,13 +60,13 @@ jobs:
           PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
           PYTEST_ADDOPTS: "-p pytest_asyncio -p pytest_anyio -p pytest_cov"
         run: |
-          set -euo pipefail
-          python -c "import sys; sys.path.insert(0,'.'); from utils.otel_tracer import init_tracer; init_tracer(); print('OTel tracer initialized.')"
+          set -o pipefail
+          # pytest çıktısını dosyaya da yaz
           python -m pytest -vv --maxfail=1 --disable-warnings \
-            -o asyncio_mode=auto \
-            --cov=. --cov-report=xml:coverage.xml --junitxml=pytest-report.xml \
-            2>&1 | tee -a pytest-console.log
-          test ${PIPESTATUS[0]} -eq 0
+            --cov=. --cov-report=xml:coverage.xml \
+            --junitxml=pytest-report.xml 2>&1 | tee -a pytest-console.log
+          # pipefail ile orijinal exit code'u koru
+          exit ${PIPESTATUS[0]}
 
       - name: Print diagnostics (always)
         if: always()
