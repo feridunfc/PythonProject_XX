@@ -28,3 +28,15 @@ streamlit
 pytest-asyncio>=0.23.0
 
 pytest-anyio
+# requirements.txt — ekle (veya varsa sürümünü >=2.3 olarak sabitle)
+pydantic-settings>=2.3
+
+# OTel trace exporter — http modülünü garanti et
+opentelemetry-exporter-otlp-proto-http==1.37.0
+# (opsiyonel ama zararsız) zaten var ise:
+# opentelemetry-exporter-otlp==1.37.0
+
+
+pydantic-settings>=2.3
+
+opentelemetry-exporter-otlp-proto-http==1.37.0
