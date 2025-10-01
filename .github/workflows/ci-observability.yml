@@ -41,11 +41,11 @@ jobs:
           set -euxo pipefail
           python -V
           python - <<'PY'
-import pkgutil, pytest
-print("pytest:", pytest.__version__)
-print("has pytest_asyncio:", bool(pkgutil.find_loader("pytest_asyncio")))
-print("has pytest_anyio:", bool(pkgutil.find_loader("pytest_anyio")))
-PY
+          import pkgutil, pytest
+          print("pytest:", pytest.__version__)
+          print("has pytest_asyncio:", bool(pkgutil.find_loader("pytest_asyncio")))
+          print("has pytest_anyio:", bool(pkgutil.find_loader("pytest_anyio")))
+          PY
           pip freeze | grep -E '^(pytest|pytest-asyncio|pytest-anyio)'
 
       - name: Run tests with tracing
@@ -60,10 +60,10 @@ PY
         run: |
           set -o pipefail
           python - <<'PY'
-from utils.otel_tracer import init_tracer
-init_tracer()
-print("OTel tracer initialized.")
-PY
+          from utils.otel_tracer import init_tracer
+          init_tracer()
+          print("OTel tracer initialized.")
+          PY
           python -m pytest -vv --maxfail=1 --disable-warnings \
                  --cov=. --cov-report=xml:coverage.xml \
                  --junitxml=pytest-report.xml 2>&1 | tee -a pytest-console.log
