@@ -1,2 +1,25 @@
-python-dotenvpydantic>=2aiohttpanyiorichmatplotlibpandasopenpyxltyper[all]fastapiuvicornpytestloguruhttpx>=0.27tenacity>=8.2opentelemetry-apiopentelemetry-sdkopentelemetry-exporter-otlpprometheus-clientstreamlitpytest-asyncio>=0.23.0pytest-anyio# requirements.txt â€” ekle (veya varsa sÃ¼rÃ¼mÃ¼nÃ¼ >=2.3 olarak sabitle)pydantic>=2.0pydantic-settings>=2.3opentelemetry-exporter-otlp==1.37.0opentelemetry-exporter-otlp-proto-http==1.37.0pydantic-settings>=2.3
+pydantic>=2,<3
+pydantic-settings>=2.3
+python-dotenv
+aiohttp
+anyio
+rich
+matplotlib
+pandas
+openpyxl
+typer[all]
+fastapi
+uvicorn
+pytest>=8,<9
+pytest-cov>=5,<6
+pytest-asyncio>=0.23,<0.24
+pytest-anyio
+loguru
+httpx>=0.27
+tenacity>=8.2
+opentelemetry-api>=1.26,<2
+opentelemetry-sdk>=1.26,<2
+opentelemetry-exporter-otlp==1.37.0
 opentelemetry-exporter-otlp-proto-http==1.37.0
+prometheus-client
+streamlit
