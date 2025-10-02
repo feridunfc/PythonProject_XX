@@ -30,3 +30,8 @@ dependencies = [
   "sqlalchemy>=2",
   "docker>=7.1.0"
 ]
+
+# pyproject.toml
+[tool.pytest.ini_options]
+addopts = "-p pytest_asyncio -p pytest_cov"
+asyncio_mode = "auto"

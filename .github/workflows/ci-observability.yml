@@ -21,22 +21,37 @@ jobs:
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: '3.11'
+
+      - name: Show HEAD & requirements.txt (pre-flight)
+        run: |
+          set -euxo pipefail
+          echo "== HEAD =="; git show -s --format='%H %s'
+          echo "== requirements.txt (with line numbers) =="
+          nl -ba requirements.txt | sed -e 's/\r$//'
+          python - <<'PY'
+from pathlib import Path
+b = Path('requirements.txt').read_bytes()
+print("len(bytes) =", len(b))
+print("has CR? ", b'\r' in b)
+PY
 
       - name: Install deps
         run: |
           set -euxo pipefail
-          python -m pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-          pip install "pydantic-settings>=2.3" \
-                      "opentelemetry-exporter-otlp-proto-http==1.37.0" \
-                      pytest-cov pytest-asyncio pytest-anyio \
-                      opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp
-          python -c "import importlib, pkgutil, pydantic; \
-            print('pydantic', pydantic.__version__); \
-            print('has pydantic_settings', bool(pkgutil.find_loader('pydantic_settings'))); \
-            importlib.import_module('opentelemetry.exporter.otlp.proto.http.trace_exporter'); \
-            print('ok: otlp http exporter')"
+          python -m pip install --upgrade pip setuptools wheel
+          # CR karakterlerini temizle (Windows'tan gelen dosyalar için)
+          tr -d '\r' < requirements.txt > requirements.norm.txt && mv requirements.norm.txt requirements.txt
+          python -m pip install -r requirements.txt -v
+          # Kritik paketleri ayrıca garanti altına al
+          python -m pip install "pydantic-settings>=2.3" "opentelemetry-exporter-otlp-proto-http==1.37.0"
+          python - <<'PY'
+import importlib, pkgutil, pydantic
+print("pydantic", pydantic.__version__)
+print("has pydantic_settings:", bool(pkgutil.find_loader('pydantic_settings')))
+importlib.import_module('opentelemetry.exporter.otlp.proto.http.trace_exporter')
+print("ok: otlp http exporter")
+PY
 
       - name: Pre-create logs (always)
         if: always()
@@ -44,6 +59,7 @@ jobs:
           : > trace_log.jsonl
           : > pytest-console.log
 
+      # .github/workflows/ci-observability.yml (ilgili adım)
       - name: Run tests with tracing
         env:
           PYTHONPATH: .
@@ -51,8 +67,8 @@ jobs:
           OBS_BACKENDS: jsonl
           TRACE_SERVICE_NAME: pythonproject_xx
           TRACE_JSONL_PATH: trace_log.jsonl
-          PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
-          PYTEST_ADDOPTS: "-p pytest_asyncio -p pytest_anyio -p pytest_cov"
+          # PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"   # <-- BUNU KALDIR
+          # PYTEST_ADDOPTS: "-p pytest_asyncio -p pytest_anyio -p pytest_cov"  # <-- Gerek yok; pyproject’a aldık
         run: |
           set -o pipefail
           python -c "from utils.otel_tracer import init_tracer; init_tracer(); print('OTel tracer initialized.')"
@@ -60,6 +76,7 @@ jobs:
                  --cov=. --cov-report=xml:coverage.xml \
                  --junitxml=pytest-report.xml 2>&1 | tee -a pytest-console.log
           test ${PIPESTATUS[0]} -eq 0
+
 
       - name: Print diagnostics (always)
         if: always()
@@ -76,6 +93,7 @@ jobs:
         with:
           name: observability-artifacts
           path: |
+            requirements.txt
             trace_log.jsonl
             coverage.xml
             pytest-report.xml
