@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8">
+<title>Multi-AI Trace Report</title>
+<style>
+body { font-family: Arial, sans-serif; background: #f4f4f9; color: #333; padding: 20px; }
+h1 { text-align: center; }
+.entry { border: 1px solid #ccc; border-radius: 8px; padding: 10px; margin: 10px 0; background: #fff; }
+.agent { font-weight: bold; color: #2c3e50; }
+.status-ok { color: green; }
+.status-error { color: red; }
+.timestamp { font-size: 0.9em; color: #888; }
+pre { background: #f0f0f0; padding: 10px; border-radius: 4px; overflow-x: auto; }
+</style></head><body><h1>Multi-AI Trace Report</h1>
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-24T20:13:15.925913</div>
+  <div><b>Task ID:</b> demo</div>
+  <div><b>Input:</b><pre>{
+  "req": "Basit TODO API"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "design": "service+repo"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CodegenAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-24T20:13:15.926252</div>
+  <div><b>Task ID:</b> demo</div>
+  <div><b>Input:</b><pre>{
+  "design": "service+repo"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "code": "print(42)"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">TesterAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-24T20:13:15.926929</div>
+  <div><b>Task ID:</b> demo</div>
+  <div><b>Input:</b><pre>{
+  "code": "print(42)"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "result": "pass"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-24T20:13:30.825329</div>
+  <div><b>Task ID:</b> demo</div>
+  <div><b>Input:</b><pre>{
+  "req": "Basit TODO API"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "design": "service+repo"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CodegenAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-24T20:13:30.825357</div>
+  <div><b>Task ID:</b> demo</div>
+  <div><b>Input:</b><pre>{
+  "design": "service+repo"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "code": "print(42)"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">TesterAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-24T20:13:30.825366</div>
+  <div><b>Task ID:</b> demo</div>
+  <div><b>Input:</b><pre>{
+  "code": "print(42)"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "result": "pass"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-24T20:17:58.481153+00:00</div>
+  <div><b>Task ID:</b> demo</div>
+  <div><b>Input:</b><pre>{
+  "req": "Basit TODO API"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "design": "service+repo"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CodegenAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-24T20:17:58.481478+00:00</div>
+  <div><b>Task ID:</b> demo</div>
+  <div><b>Input:</b><pre>{
+  "design": "service+repo"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "code": "print(42)"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">TesterAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-24T20:17:58.482269+00:00</div>
+  <div><b>Task ID:</b> demo</div>
+  <div><b>Input:</b><pre>{
+  "code": "print(42)"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "result": "pass"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-25T16:30:15.699198+00:00</div>
+  <div><b>Task ID:</b> dc8334bb-951c-4bac-a80d-c6e32cd6d579</div>
+  <div><b>Input:</b><pre>{
+  "task_id": "dc8334bb-951c-4bac-a80d-c6e32cd6d579",
+  "spec": "Basit TODO API: kullanıcı, görev ekle/listele"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "text": "MOCK_OK"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CodegenAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-25T16:30:15.700510+00:00</div>
+  <div><b>Task ID:</b> dc8334bb-951c-4bac-a80d-c6e32cd6d579</div>
+  <div><b>Input:</b><pre>{
+  "status": "ok",
+  "text": "MOCK_OK"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "execution_plan": "MOCK_OK",
+  "text": "MOCK_OK"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CriticAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-25T16:30:15.703260+00:00</div>
+  <div><b>Task ID:</b> dc8334bb-951c-4bac-a80d-c6e32cd6d579</div>
+  <div><b>Input:</b><pre>{
+  "status": "ok",
+  "execution_plan": "MOCK_OK",
+  "text": "MOCK_OK"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "text": "MOCK_OK"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">TesterAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-25T16:30:15.705617+00:00</div>
+  <div><b>Task ID:</b> dc8334bb-951c-4bac-a80d-c6e32cd6d579</div>
+  <div><b>Input:</b><pre>{
+  "status": "ok",
+  "execution_plan": "MOCK_OK",
+  "text": "MOCK_OK"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "text": "MOCK_OK"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-25T16:33:02.748734+00:00</div>
+  <div><b>Task ID:</b> 5e828a13-8efc-441f-95d0-1316223027aa</div>
+  <div><b>Input:</b><pre>{
+  "task_id": "5e828a13-8efc-441f-95d0-1316223027aa",
+  "spec": "Basit TODO API: kullanıcı, görev ekle/listele"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '429 Too Many Requests' for url 'https://api.openai.com/v1/chat/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-25T17:06:13.386429+00:00</div>
+  <div><b>Task ID:</b> 13abd2b5-b123-4ed6-8840-172a5b2964d3</div>
+  <div><b>Input:</b><pre>{
+  "task_id": "13abd2b5-b123-4ed6-8840-172a5b2964d3",
+  "spec": "Basit TODO API: kullanıcı, görev ekle/listele"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "text": "```python\nfrom flask import Flask, request, jsonify\n\napp = Flask(__name__)\ntodos = []\n\n@app.route('/todos', methods=['GET', 'POST'])\ndef handle_todos():\n    if request.method == 'POST':\n        todo = request.json.get('todo')\n        if todo:\n            todos.append(todo)\n            return jsonify({'message': 'Görev eklendi', 'todos': todos}), 201\n        else:\n            return jsonify({'error': 'Görev boş olamaz'}), 400\n    else:\n        return jsonify({'todos': todos})\n\nif __name__ == '__main__':\n    app.run(debug=True)\n```\n"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-25T17:06:40.190144+00:00</div>
+  <div><b>Task ID:</b> 13901f7b-819e-4d11-b933-4f77bab790c9</div>
+  <div><b>Input:</b><pre>{
+  "task_id": "13901f7b-819e-4d11-b933-4f77bab790c9",
+  "spec": "Basit TODO API: kullanıcı, görev ekle/listele"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "text": "```python\nfrom flask import Flask, request, jsonify\n\napp = Flask(__name__)\ntodos = []\n\n@app.route('/todos', methods=['GET', 'POST'])\ndef handle_todos():\n    if request.method == 'POST':\n        todo = request.json.get('todo')\n        if todo:\n            todos.append(todo)\n            return jsonify({'message': 'Görev eklendi', 'todos': todos}), 201\n        else:\n            return jsonify({'error': 'Görev alanı boş olamaz'}), 400\n    else:\n        return jsonify({'todos': todos})\n\nif __name__ == '__main__':\n    app.run(debug=True)\n```\n"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CodegenAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-25T17:06:46.300006+00:00</div>
+  <div><b>Task ID:</b> 13901f7b-819e-4d11-b933-4f77bab790c9</div>
+  <div><b>Input:</b><pre>{
+  "status": "ok",
+  "text": "```python\nfrom flask import Flask, request, jsonify\n\napp = Flask(__name__)\ntodos = []\n\n@app.route('/todos', methods=['GET', 'POST'])\ndef handle_todos():\n    if request.method == 'POST':\n        todo = request.json.get('todo')\n        if todo:\n            todos.append(todo)\n            return jsonify({'message': 'Görev eklendi', 'todos': todos}), 201\n        else:\n            return jsonify({'error': 'Görev alanı boş olamaz'}), 400\n    else:\n        return jsonify({'todos': todos})\n\nif __name__ == '__main__':\n    app.run(debug=True)\n```\n"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "execution_plan": "1. **Proje Yapısı:** `todo_api/` dizini altında `main.py`, `todo.py` dosyaları.\n2. **`todo.py`:**  `Todo` sınıfı (görevleri tutar, ekleme/listeleme metodları).\n3. **`main.py`:** Flask uygulaması, `/add` (POST, görev ekler), `/list` (GET, görevleri listeler) endpoint'leri.\n4. **Görev Ekleme:**  `main.py`'deki `/add` endpoint'i, `todo.py`'deki ekleme metodunu çağırır.\n5. **Görev Listeleme:** `/list` endpoint'i, `todo.py`'deki listeleme metodunu çağırır, JSON formatında döndürür.\n6. **Veri Depolama:**  Basit liste (`todo.py` içinde) veya daha gelişmiş bir çözüm (SQLite, dosya).\n7. **Hata Yönetimi:**  Uygun HTTP durum kodları (200, 201, 400 vb.) ve hata mesajları.\n",
+  "text": "```markdown\n# Minimal TODO API\n\nBu proje, basit bir TODO API'sini Flask kullanarak oluşturur. Görevler bellekte tutulur.  Daha kalıcı bir çözüm için `todo.py` dosyasındaki `todos` listesini bir veritabanı veya dosya sistemi ile değiştirmeniz gerekecektir.\n\n## Proje Yapısı\n\n```\ntodo_api/\n├── main.py\n└── todo.py\n```\n\n## todo.py\n\n```python\nclass Todo:\n    def __init__(self):\n        self.todos = []\n\n    def add(self, task):\n        self.todos.append(task)\n        return {\"message\": \"Task added\", \"task\": task}\n\n    def list_todos(self):\n        return self.todos\n```\n\n## main.py\n\n```python\nfrom flask import Flask, request, jsonify\nfrom todo import Todo\n\napp = Flask(__name__)\ntodo = Todo()\n\n@app.route('/add', methods=['POST'])\ndef add_todo():\n    try:\n        task = request.json['task']\n        result = todo.add(task)\n        return jsonify(result), 201\n    except KeyError:\n        return jsonify({\"error\": \"Missing 'task' field\"}), 400\n    except Exception as e:\n        return jsonify({\"error\": str(e)}), 500\n\n\n@app.route('/list', methods=['GET'])\ndef list_todos():\n    return jsonify(todo.list_todos()), 200\n\nif __name__ == '__main__':\n    app.run(debug=True)\n```\n\n```bash\n# Çalıştırmak için:\npip install Flask\npython todo_api/main.py\n```\n```\n"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CriticAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-25T17:06:47.941309+00:00</div>
+  <div><b>Task ID:</b> 13901f7b-819e-4d11-b933-4f77bab790c9</div>
+  <div><b>Input:</b><pre>{
+  "status": "ok",
+  "execution_plan": "1. **Proje Yapısı:** `todo_api/` dizini altında `main.py`, `todo.py` dosyaları.\n2. **`todo.py`:**  `Todo` sınıfı (görevleri tutar, ekleme/listeleme metodları).\n3. **`main.py`:** Flask uygulaması, `/add` (POST, görev ekler), `/list` (GET, görevleri listeler) endpoint'leri.\n4. **Görev Ekleme:**  `main.py`'deki `/add` endpoint'i, `todo.py`'deki ekleme metodunu çağırır.\n5. **Görev Listeleme:** `/list` endpoint'i, `todo.py`'deki listeleme metodunu çağırır, JSON formatında döndürür.\n6. **Veri Depolama:**  Basit liste (`todo.py` içinde) veya daha gelişmiş bir çözüm (SQLite, dosya).\n7. **Hata Yönetimi:**  Uygun HTTP durum kodları (200, 201, 400 vb.) ve hata mesajları.\n",
+  "text": "```markdown\n# Minimal TODO API\n\nBu proje, basit bir TODO API'sini Flask kullanarak oluşturur. Görevler bellekte tutulur.  Daha kalıcı bir çözüm için `todo.py` dosyasındaki `todos` listesini bir veritabanı veya dosya sistemi ile değiştirmeniz gerekecektir.\n\n## Proje Yapısı\n\n```\ntodo_api/\n├── main.py\n└── todo.py\n```\n\n## todo.py\n\n```python\nclass Todo:\n    def __init__(self):\n        self.todos = []\n\n    def add(self, task):\n        self.todos.append(task)\n        return {\"message\": \"Task added\", \"task\": task}\n\n    def list_todos(self):\n        return self.todos\n```\n\n## main.py\n\n```python\nfrom flask import Flask, request, jsonify\nfrom todo import Todo\n\napp = Flask(__name__)\ntodo = Todo()\n\n@app.route('/add', methods=['POST'])\ndef add_todo():\n    try:\n        task = request.json['task']\n        result = todo.add(task)\n        return jsonify(result), 201\n    except KeyError:\n        return jsonify({\"error\": \"Missing 'task' field\"}), 400\n    except Exception as e:\n        return jsonify({\"error\": str(e)}), 500\n\n\n@app.route('/list', methods=['GET'])\ndef list_todos():\n    return jsonify(todo.list_todos()), 200\n\nif __name__ == '__main__':\n    app.run(debug=True)\n```\n\n```bash\n# Çalıştırmak için:\npip install Flask\npython todo_api/main.py\n```\n```\n"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "text": "```python\nfrom flask import Flask, request, jsonify\n\napp = Flask(__name__)\ntodos = []\n\n@app.route('/todos', methods=['GET', 'POST'])\ndef handle_todos():\n    if request.method == 'GET':\n        return jsonify(todos)\n    elif request.method == 'POST':\n        todo = request.json.get('todo')\n        if todo:\n            todos.append(todo)\n            return jsonify({'message': 'Görev eklendi'}), 201\n        else:\n            return jsonify({'error': 'Görev eklemek için \"todo\" alanı gerekli'}), 400\n\nif __name__ == '__main__':\n    app.run(debug=True)\n```\n"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">TesterAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-25T17:06:49.835136+00:00</div>
+  <div><b>Task ID:</b> 13901f7b-819e-4d11-b933-4f77bab790c9</div>
+  <div><b>Input:</b><pre>{
+  "status": "ok",
+  "execution_plan": "1. **Proje Yapısı:** `todo_api/` dizini altında `main.py`, `todo.py` dosyaları.\n2. **`todo.py`:**  `Todo` sınıfı (görevleri tutar, ekleme/listeleme metodları).\n3. **`main.py`:** Flask uygulaması, `/add` (POST, görev ekler), `/list` (GET, görevleri listeler) endpoint'leri.\n4. **Görev Ekleme:**  `main.py`'deki `/add` endpoint'i, `todo.py`'deki ekleme metodunu çağırır.\n5. **Görev Listeleme:** `/list` endpoint'i, `todo.py`'deki listeleme metodunu çağırır, JSON formatında döndürür.\n6. **Veri Depolama:**  Basit liste (`todo.py` içinde) veya daha gelişmiş bir çözüm (SQLite, dosya).\n7. **Hata Yönetimi:**  Uygun HTTP durum kodları (200, 201, 400 vb.) ve hata mesajları.\n",
+  "text": "```markdown\n# Minimal TODO API\n\nBu proje, basit bir TODO API'sini Flask kullanarak oluşturur. Görevler bellekte tutulur.  Daha kalıcı bir çözüm için `todo.py` dosyasındaki `todos` listesini bir veritabanı veya dosya sistemi ile değiştirmeniz gerekecektir.\n\n## Proje Yapısı\n\n```\ntodo_api/\n├── main.py\n└── todo.py\n```\n\n## todo.py\n\n```python\nclass Todo:\n    def __init__(self):\n        self.todos = []\n\n    def add(self, task):\n        self.todos.append(task)\n        return {\"message\": \"Task added\", \"task\": task}\n\n    def list_todos(self):\n        return self.todos\n```\n\n## main.py\n\n```python\nfrom flask import Flask, request, jsonify\nfrom todo import Todo\n\napp = Flask(__name__)\ntodo = Todo()\n\n@app.route('/add', methods=['POST'])\ndef add_todo():\n    try:\n        task = request.json['task']\n        result = todo.add(task)\n        return jsonify(result), 201\n    except KeyError:\n        return jsonify({\"error\": \"Missing 'task' field\"}), 400\n    except Exception as e:\n        return jsonify({\"error\": str(e)}), 500\n\n\n@app.route('/list', methods=['GET'])\ndef list_todos():\n    return jsonify(todo.list_todos()), 200\n\nif __name__ == '__main__':\n    app.run(debug=True)\n```\n\n```bash\n# Çalıştırmak için:\npip install Flask\npython todo_api/main.py\n```\n```\n"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "text": "```python\nfrom flask import Flask, request, jsonify\n\napp = Flask(__name__)\ntodos = []\n\n@app.route('/todos', methods=['GET', 'POST'])\ndef handle_todos():\n    if request.method == 'POST':\n        todo = request.json.get('todo')\n        if todo:\n            todos.append(todo)\n            return jsonify({'message': 'Görev eklendi', 'todos': todos}), 201\n        else:\n            return jsonify({'error': 'Görev alanı boş olamaz'}), 400\n    else:\n        return jsonify({'todos': todos})\n\nif __name__ == '__main__':\n    app.run(debug=True)\n```\n"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:03:32.858202+00:00</div>
+  <div><b>Task ID:</b> 3b60a013-f8b7-4be1-af11-f7ca96cbfc63</div>
+  <div><b>Input:</b><pre>{
+  "task_id": "3b60a013-f8b7-4be1-af11-f7ca96cbfc63",
+  "spec": "Basit TODO API: kullanıcı, görev ekle/listele"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CodegenAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:03:42.749411+00:00</div>
+  <div><b>Task ID:</b> 3b60a013-f8b7-4be1-af11-f7ca96cbfc63</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CriticAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:03:52.428313+00:00</div>
+  <div><b>Task ID:</b> 3b60a013-f8b7-4be1-af11-f7ca96cbfc63</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '429 Too Many Requests' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">TesterAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:04:22.756462+00:00</div>
+  <div><b>Task ID:</b> 3b60a013-f8b7-4be1-af11-f7ca96cbfc63</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:08:04.777177+00:00</div>
+  <div><b>Task ID:</b> 9b3d3ad6-04b3-4844-9c28-53b9a5735b3b</div>
+  <div><b>Input:</b><pre>{
+  "task_id": "9b3d3ad6-04b3-4844-9c28-53b9a5735b3b",
+  "spec": "Basit TODO API: kullanıcı, görev ekle/listele"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CodegenAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:08:17.465652+00:00</div>
+  <div><b>Task ID:</b> 9b3d3ad6-04b3-4844-9c28-53b9a5735b3b</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CriticAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:08:24.526264+00:00</div>
+  <div><b>Task ID:</b> 9b3d3ad6-04b3-4844-9c28-53b9a5735b3b</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '429 Too Many Requests' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">TesterAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:08:37.804936+00:00</div>
+  <div><b>Task ID:</b> 9b3d3ad6-04b3-4844-9c28-53b9a5735b3b</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '429 Too Many Requests' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBOdvAZk98URkejf_Ab8Rdb7b6-AfB9w8k'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:14:08.660915+00:00</div>
+  <div><b>Task ID:</b> 602c4f93-d05b-4b03-b37e-612530fc2a71</div>
+  <div><b>Input:</b><pre>{
+  "task_id": "602c4f93-d05b-4b03-b37e-612530fc2a71",
+  "spec": "Basit TODO API: kullanıcı, görev ekle/listele"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CodegenAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:14:32.293144+00:00</div>
+  <div><b>Task ID:</b> 602c4f93-d05b-4b03-b37e-612530fc2a71</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "error": "Client error '400 Bad Request' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:29:22.110975+00:00</div>
+  <div><b>Task ID:</b> 5e7be543-7eeb-4f2d-a467-769a291a877e</div>
+  <div><b>Input:</b><pre>{
+  "task_id": "5e7be543-7eeb-4f2d-a467-769a291a877e",
+  "spec": "Basit TODO API: kullanıcı, görev ekle/listele"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "text": "MOCK_OK"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CodegenAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:29:22.112174+00:00</div>
+  <div><b>Task ID:</b> 5e7be543-7eeb-4f2d-a467-769a291a877e</div>
+  <div><b>Input:</b><pre>{
+  "status": "ok",
+  "text": "MOCK_OK"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "execution_plan": "MOCK_OK",
+  "text": "MOCK_OK"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CriticAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:29:22.113654+00:00</div>
+  <div><b>Task ID:</b> 5e7be543-7eeb-4f2d-a467-769a291a877e</div>
+  <div><b>Input:</b><pre>{
+  "status": "ok",
+  "execution_plan": "MOCK_OK",
+  "text": "MOCK_OK"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "text": "MOCK_OK"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">TesterAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:29:22.117790+00:00</div>
+  <div><b>Task ID:</b> 5e7be543-7eeb-4f2d-a467-769a291a877e</div>
+  <div><b>Input:</b><pre>{
+  "status": "ok",
+  "execution_plan": "MOCK_OK",
+  "text": "MOCK_OK"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "ok",
+  "text": "MOCK_OK"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:30:25.274583+00:00</div>
+  <div><b>Task ID:</b> dcac4561-6336-4101-b339-ba376c4b157d</div>
+  <div><b>Input:</b><pre>{
+  "task_id": "dcac4561-6336-4101-b339-ba376c4b157d",
+  "spec": "Basit TODO API: kullanıcı, görev ekle/listele"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '429 Too Many Requests' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CodegenAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:30:40.456139+00:00</div>
+  <div><b>Task ID:</b> dcac4561-6336-4101-b339-ba376c4b157d</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "error": "Client error '429 Too Many Requests' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '429 Too Many Requests' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CriticAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:30:52.897194+00:00</div>
+  <div><b>Task ID:</b> dcac4561-6336-4101-b339-ba376c4b157d</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '429 Too Many Requests' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '429 Too Many Requests' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">TesterAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:31:18.159582+00:00</div>
+  <div><b>Task ID:</b> dcac4561-6336-4101-b339-ba376c4b157d</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '429 Too Many Requests' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '429 Too Many Requests' for url 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">ArchitectAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:39:43.344630+00:00</div>
+  <div><b>Task ID:</b> 6f1c88d1-e397-494d-ab87-f18e389fc090</div>
+  <div><b>Input:</b><pre>{
+  "task_id": "6f1c88d1-e397-494d-ab87-f18e389fc090",
+  "spec": "Basit TODO API: kullanıcı, görev ekle/listele"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gpt-4o-mini:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CodegenAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T04:41:16.475043+00:00</div>
+  <div><b>Task ID:</b> 6f1c88d1-e397-494d-ab87-f18e389fc090</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gpt-4o-mini:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gpt-4o-mini:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">CriticAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T13:25:46.508437+00:00</div>
+  <div><b>Task ID:</b> 6f1c88d1-e397-494d-ab87-f18e389fc090</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gpt-4o-mini:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gpt-4o-mini:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+</div>
+
+
+<div class="entry">
+  <div class="agent">TesterAgent <span class="status-ok">[OK]</span></div>
+  <div class="timestamp">2025-09-26T13:26:21.407146+00:00</div>
+  <div><b>Task ID:</b> 6f1c88d1-e397-494d-ab87-f18e389fc090</div>
+  <div><b>Input:</b><pre>{
+  "status": "error",
+  "stage": "planning",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gpt-4o-mini:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+  <div><b>Output:</b><pre>{
+  "status": "error",
+  "error": "Client error '404 Not Found' for url 'https://generativelanguage.googleapis.com/v1beta/models/gpt-4o-mini:generateContent?key=AIzaSyDYK8vz3tPAsCKH5e0uyNxsAKLsClK99_o'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
+}</pre></div>
+</div>
+</body></html>

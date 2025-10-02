@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="0.831" timestamp="2025-10-01T16:07:44.794690+00:00" hostname="runnervm3ublj"><testcase classname="" name="tests.test_api" time="0.000"><error message="collection failure">ImportError while importing test module '/home/runner/work/PythonProject_XX/PythonProject_XX/tests/test_api.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/hostedtoolcache/Python/3.11.13/x64/lib/python3.11/site-packages/_pytest/python.py:498: in importtestmodule
+    mod = import_path(
+/opt/hostedtoolcache/Python/3.11.13/x64/lib/python3.11/site-packages/_pytest/pathlib.py:587: in import_path
+    importlib.import_module(module_name)
+/opt/hostedtoolcache/Python/3.11.13/x64/lib/python3.11/importlib/__init__.py:126: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+&lt;frozen importlib._bootstrap&gt;:1204: in _gcd_import
+    ???
+&lt;frozen importlib._bootstrap&gt;:1176: in _find_and_load
+    ???
+&lt;frozen importlib._bootstrap&gt;:1147: in _find_and_load_unlocked
+    ???
+&lt;frozen importlib._bootstrap&gt;:690: in _load_unlocked
+    ???
+/opt/hostedtoolcache/Python/3.11.13/x64/lib/python3.11/site-packages/_pytest/assertion/rewrite.py:186: in exec_module
+    exec(co, module.__dict__)
+tests/test_api.py:3: in &lt;module&gt;
+    from feridunfc_meta_ai.api.main import app
+feridunfc_meta_ai/api/main.py:5: in &lt;module&gt;
+    from ..config.settings import settings
+feridunfc_meta_ai/config/settings.py:1: in &lt;module&gt;
+    from pydantic_settings import BaseSettings, SettingsConfigDict
+E   ModuleNotFoundError: No module named 'pydantic_settings'</error></testcase></testsuite></testsuites>

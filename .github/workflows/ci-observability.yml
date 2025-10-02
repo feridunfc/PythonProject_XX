@@ -1,108 +1,54 @@
-name: CI Observability
-
+name: ci-observability
 on:
-  push:
-    branches: [ feature-security-and-sprint ]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  actions: write
-
-defaults:
-  run:
-    shell: bash
-
+  push: { branches: [ main, v4.0-ollama ] }
+  pull_request:
 jobs:
-  traces:
-    runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      # Install project deps + ensure the critical ones are present
+        with: { python-version: '3.11' }
       - name: Install deps
         run: |
-          set -euxo pipefail
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          # hard-ensure these exist even if requirements.txt misses them
-          pip install pydantic-settings "opentelemetry-exporter-otlp==1.37.0" "opentelemetry-exporter-otlp-proto-http==1.37.0"
-          pip install pytest-cov pytest-asyncio pytest-anyio opentelemetry-api opentelemetry-sdk
-
-      # Verify that imports resolve BEFORE running tests
-      - name: Verify deps
-        run: |
-          set -euxo pipefail
-          python - <<'PY'
-import sys, importlib
-print("py", sys.version)
-mods = [
-  "pydantic",
-  "pydantic_settings",
-  "opentelemetry.exporter.otlp.proto.http.trace_exporter",
-]
-for m in mods:
-    try:
-        importlib.import_module(m)
-        print("OK", m)
-    except Exception as e:
-        print("MISS", m, "->", e)
-PY
-          pip show pydantic-settings || true
-          pip list | grep -E "pydantic|settings|opentelemetry" || true
-
-      - name: Pre-create logs (always)
-        if: always()
-        run: |
-          : > trace_log.jsonl
-          : > pytest-console.log
-
-      - name: Sanity check (pytest & plugins)
-        run: |
-          set -euxo pipefail
-          python -V
-          python -c "import pkgutil,pytest; print('pytest:', pytest.__version__); print('has pytest_asyncio:', bool(pkgutil.find_loader('pytest_asyncio'))); print('has pytest_anyio:', bool(pkgutil.find_loader('pytest_anyio')))"
-          pip freeze | grep -E '^(pytest|pytest-asyncio|pytest-anyio)'
-
       - name: Run tests with tracing
+        shell: bash
         env:
           PYTHONPATH: .
-          MOCK_AI: "true"
           OBS_BACKENDS: jsonl
           TRACE_SERVICE_NAME: pythonproject_xx
           TRACE_JSONL_PATH: trace_log.jsonl
-          PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
-          PYTEST_ADDOPTS: "-p pytest_asyncio -p pytest_anyio -p pytest_cov"
         run: |
           set -o pipefail
-          python -c "from utils.otel_tracer import init_tracer; init_tracer(); print('OTel tracer initialized.')"
-          python -m pytest -vv --maxfail=1 --disable-warnings \
-                 --cov=. --cov-report=xml:coverage.xml \
-                 --junitxml=pytest-report.xml 2>&1 | tee -a pytest-console.log
-          exit ${PIPESTATUS[0]}
+          unset PYTEST_DISABLE_PLUGIN_AUTOLOAD || true
 
-      - name: Print diagnostics (always)
-        if: always()
+          python - <<'PY'
+import pkgutil, pytest, sys
+print("PYVER=", sys.version)
+print("PYTEST=", pytest.__version__)
+print("PLUGINS_PKG=", [m.name for m in pkgutil.iter_modules() if m.name.startswith("pytest_")])
+PY
+
+          python -m pytest -vv --maxfail=1 --disable-warnings             -o asyncio_mode=auto             --cov=. --cov-report=xml:coverage.xml             --junitxml=pytest-report.xml 2>&1 | tee -a pytest-console.log
+          test ${PIPESTATUS[0]} -eq 0
+      - name: Coverage gate (warn @60%, fail @50%)
         run: |
-          echo "== ls -la =="; ls -la
-          echo "== pytest-report head =="; head -n 80 pytest-report.xml || true
-          echo "== coverage head =="; head -n 40 coverage.xml || echo "no coverage.xml"
-          echo "== trace tail =="; tail -n 120 trace_log.jsonl || true
-          echo "== console head =="; head -n 120 pytest-console.log || true
+          python - <<'PY'
+import sys, xml.etree.ElementTree as ET
+tree = ET.parse('coverage.xml'); cov=float(tree.getroot().get('line-rate',0))*100
+print(f"COVERAGE={cov:.2f}%")
+warn, fail = 60.0, 50.0
+sys.exit(1 if cov < fail else 0)
+PY
 
-      - name: Upload observability artifacts
-        if: always()
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: observability-artifacts
+          name: test-artifacts
           path: |
-            trace_log.jsonl
             coverage.xml
             pytest-report.xml
             pytest-console.log
-          if-no-files-found: warn
-          retention-days: 7
+            trace_log.jsonl

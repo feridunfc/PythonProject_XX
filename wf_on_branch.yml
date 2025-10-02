@@ -1,0 +1,75 @@
+﻿﻿name: CI Observability
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  traces:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest-cov pytest-asyncio pytest-anyio opentelemetry-api opentelemetry-sdk opentelemetry-exporter-otlp
+
+      - name: Pre-create logs (always)
+        if: always()
+        run: |
+          : > trace_log.jsonl
+          : > pytest-console.log
+
+      - name: Sanity check (pytest & plugins)
+        run: |
+          set -euxo pipefail
+          python -V
+          python - <<'PY'
+import pkgutil, pytest
+print("pytest:", pytest.__version__)
+print("has pytest_asyncio:", bool(pkgutil.find_loader("pytest_asyncio")))
+print("has pytest_anyio:", bool(pkgutil.find_loader("pytest_anyio")))
+PY
+          pip freeze | grep -E '^(pytest|pytest-asyncio|pytest-anyio)'
+
+      - name: Run tests with tracing
+        env:
+          PYTHONPATH: .
+          MOCK_AI: "true"
+          OBS_BACKENDS: jsonl
+          TRACE_SERVICE_NAME: pythonproject_xx
+          TRACE_JSONL_PATH: trace_log.jsonl
+          PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"
+          PYTEST_ADDOPTS: "-p pytest_asyncio -p pytest_anyio -p pytest_cov"
+        run: |
+          set -o pipefail
+          python - <<'PY'
+from utils.otel_tracer import init_tracer
+init_tracer()
+print("OTel tracer initialized.")
+PY
+          python -m pytest -vv --maxfail=1 --disable-warnings --cov=. --cov-report=xml:coverage.xml --junitxml=pytest-report.xml 2>&1 | tee -a pytest-console.log
+          exit ${PIPESTATUS[0]}
+
+      - name: Print diagnostics (always)
+        if: always()
+        run: |
+          echo "== ls -la =="; ls -la
+          echo "== pytest-report head =="; head -n 80 pytest-report.xml || true
+          echo "== coverage head =="; head -n 40 coverage.xml || echo "no coverage.xml"
+          echo "== trace tail =="; tail -n 120 trace_log.jsonl || true
+          echo "== console head =="; head -n 120 pytest-console.log || true
+
+      - name: Upload observability artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: observability-artifacts
+          path: |
+            trace_log.jsonl
+            coverage.xml
+            pytest-report.xml
+            pytest-console.log
+          if-no-files-found: warn
