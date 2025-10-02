@@ -67,12 +67,15 @@ PY
           OBS_BACKENDS: jsonl
           TRACE_SERVICE_NAME: pythonproject_xx
           TRACE_JSONL_PATH: trace_log.jsonl
-          # PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"   # <-- BUNU KALDIR
-          # PYTEST_ADDOPTS: "-p pytest_asyncio -p pytest_anyio -p pytest_cov"  # <-- Gerek yok; pyproject’a aldık
+          # PYTEST_DISABLE_PLUGIN_AUTOLOAD: "1"   # <-- KESİNLİKLE YOK!
+          # PYTEST_ADDOPTS: "... "                # <-- Gerek yok; pyproject kullanıyoruz
         run: |
           set -o pipefail
+          rm -rf .pytest_cache || true
           python -c "from utils.otel_tracer import init_tracer; init_tracer(); print('OTel tracer initialized.')"
+          # Emniyet için plugin’i CLI’dan da yüklüyoruz:
           python -m pytest -vv --maxfail=1 --disable-warnings \
+                 -p pytest_asyncio.plugin -p pytest_cov \
                  --cov=. --cov-report=xml:coverage.xml \
                  --junitxml=pytest-report.xml 2>&1 | tee -a pytest-console.log
           test ${PIPESTATUS[0]} -eq 0
