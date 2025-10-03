@@ -1,6 +1,11 @@
-from fastapi import FastAPI, HTTPException, Header, Depends, status, Query
+﻿from fastapi import FastAPI, HTTPException, Header, Depends, status, Query
 from pydantic import BaseModel
 from typing import Dict, Optional, List
+import os  # <-- EKLE
+
+from ..orchestrator.sprint_orchestrator import SprintOrchestrator
+from ..config.settings import settings
+
 from ..orchestrator.sprint_orchestrator import SprintOrchestrator
 from ..config.settings import settings
 
@@ -16,9 +21,12 @@ class Summary(BaseModel):
     sprint_id: str; title: str; total_tasks: int
 
 def auth(x_api_key: Optional[str] = Header(None)):
-    if (settings.api_key or "dev-secret") and x_api_key != settings.api_key:
+    import os  # lokal import
+    expected = getattr(settings, "api_key", os.getenv("API_KEY", "dev-secret"))
+    if expected and x_api_key != expected:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid API key")
     return True
+
 
 class Manager:
     def __init__(self): self.pool: Dict[str, SprintOrchestrator] = {}
@@ -75,3 +83,25 @@ async def _api_key_guard(request: Request, call_next):
         return JSONResponse({"detail": "Invalid API Key"}, status_code=401)
     return await call_next(request)
 # --- /API Key middleware ---
+
+
+
+
+def auth(x_api_key: Optional[str] = Header(None)):
+    # API key'i şu öncelik ile al:
+    # 1) settings.api_key (varsa)
+    # 2) ortam değişkeni API_KEY (varsa)
+    # 3) "dev-secret" (default)
+    expected = (getattr(settings, "api_key", None) or os.getenv("API_KEY") or "dev-secret")
+    if expected and x_api_key != expected:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid api key")
+
+
+
+def auth(x_api_key: Optional[str] = Header(None)):
+    import os  # local import: global olmasa da garanti
+    # Öncelik: settings.api_key -> env(API_KEY) -> "dev-secret"
+    expected = (getattr(settings, "api_key", None) or os.getenv("API_KEY") or "dev-secret")
+    if expected and x_api_key != expected:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid api key")
+

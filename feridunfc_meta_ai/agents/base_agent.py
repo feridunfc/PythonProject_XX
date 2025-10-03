@@ -20,9 +20,13 @@ class BaseAIAgent(ABC):
     - Context Enrichment: codegen/tester görevleri için workdir içinden ilgili dosyaları toplar.
     """
     def __init__(self, client: Any, agent_type: str, name: Optional[str] = None) -> None:
+        # Argümanlar ters verildiyse (agent_type str değil, client str ise) düzelt
+        if not isinstance(agent_type, str) and isinstance(client, str):
+            client, agent_type = agent_type, client
+
         self.client = client
         self.agent_type = (agent_type or "").lower()
-        self.name = name or self.__class__.__name__
+        self.name = name or self.agent_type
 
     # --------- yardımcılar ---------
     def _safe_set_attr(self, obj: Any, key: str, value: Any) -> None:
